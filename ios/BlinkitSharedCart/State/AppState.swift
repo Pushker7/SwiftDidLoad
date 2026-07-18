@@ -125,20 +125,17 @@ final class AppState {
     }
 
     private func setupSocketCallbacks() {
-        socket.onState = { [weak self] carts, activeCartId, members in
+        socket.onState = { [weak self] incomingSharedCarts, _, incomingMembers in
             guard let self else { return }
-            self.carts = carts
-            self.members = members
-            if let activeCartId,
-               carts.contains(where: { $0.id == activeCartId }) {
-
-                self.activeCartId = activeCartId
-
-            } else {
-
-                self.activeCartId = carts.first?.id ?? ""
+            // Set-reconciliation: the sender always broadcasts its FULL known shared-cart
+            // set, so replacing our whole shared subset with theirs correctly propagates
+            // adds, edits, AND deletes, while personal (non-shared) carts are untouched.
+            self.carts.removeAll { $0.isShared }
+            self.carts.append(contentsOf: incomingSharedCarts)
+            self.members = incomingMembers
+            if !self.carts.contains(where: { $0.id == self.activeCartId }) {
+                self.activeCartId = self.carts.first?.id ?? ""
             }
-            PersonalCartStore.save(carts)
         }
         socket.onEvent = { [weak self] actorId, actorName, eventType, productName, qty in
             self?.handleEvent(actorId: actorId, actorName: actorName, eventType: eventType, productName: productName, qty: qty)
@@ -146,21 +143,16 @@ final class AppState {
         socket.onPeerConnected = { [weak self] peerUser in
             guard let self, let user = self.user else { return }
             self.members = [user, peerUser]
-            self.broadcastSharedCarts()
-            self.socket.sendEvent(actorId: user.id, actorName: user.name, eventType: "join", productName: nil, qty: nil)
-            self.showToast("Connected with \(peerUser.name)! Ready to share carts 🎉")
-            self.socket.stopDiscovery()
-        }
-    }
-
-    /// Full-snapshot merge: upsert every incoming shared cart by id, leave personal carts alone.
-    private func mergeIncoming(carts incomingCarts: [Cart]) {
-        for incoming in incomingCarts {
-            if let index = carts.firstIndex(where: { $0.id == incoming.id }) {
-                carts[index] = incoming
+            // First-time connect: stand up a live shared cart automatically so both
+            // sides immediately see items and totals sync, no manual setup needed.
+            if !self.carts.contains(where: { $0.isShared }) {
+                self.createCart(name: "Shared Cart", isShared: true)
             } else {
-                carts.append(incoming)
+                self.broadcastSharedCarts()
             }
+            self.socket.sendEvent(actorId: user.id, actorName: user.name, eventType: "join", productName: nil, qty: nil)
+            self.showToast("Connected with \(peerUser.name)! Shared Cart is live 🎉")
+            self.socket.stopDiscovery()
         }
     }
 
@@ -196,26 +188,27 @@ final class AppState {
         carts.append(newCart)
         activeCartId = newCart.id
         if isShared { broadcastSharedCarts() }
-        syncCartState()
         return newCart
     }
 
     func deleteCart(id: String) {
+        let wasShared = cartFor(id)?.isShared ?? false
         carts.removeAll { $0.id == id }
         if activeCartId == id {
             activeCartId = carts.first?.id ?? ""
         }
-        syncCartState()
+        if wasShared { broadcastSharedCarts() }
     }
 
     /// Toggle a cart between personal and shared. Turning sharing on immediately
-    /// broadcasts it so a connected peer sees the new list appear live.
+    /// broadcasts it so a connected peer sees the new list appear live; turning it
+    /// off broadcasts too, so the peer's copy of that list disappears.
     func setShared(cartId: String, isShared: Bool) {
         guard let index = carts.firstIndex(where: { $0.id == cartId }) else { return }
+        let wasShared = carts[index].isShared
         carts[index].isShared = isShared
         carts[index].memberIds = isShared ? members.map { $0.id } : []
-        if isShared { broadcastSharedCarts() }
-        syncCartState()
+        if isShared || wasShared { broadcastSharedCarts() }
     }
 
     /// Disconnects the peer and demotes every shared cart back to personal (kept locally, no data loss).
@@ -225,56 +218,29 @@ final class AppState {
             carts[index].isShared = false
             carts[index].memberIds = []
         }
-        PersonalCartStore.save(carts)
     }
 
+    /// Sends the full set of shared carts (including ones received from the peer earlier),
+    /// so the receiver can do a correct set-reconciliation — including deletions.
     private func broadcastSharedCarts() {
-        let shared = carts.filter { $0.isShared }
-        guard !shared.isEmpty else { return }
-        socket.sendCartState(carts: carts, activeCartId: activeCartId, members: members)
+        socket.sendCartState(carts: carts.filter { $0.isShared }, activeCartId: activeCartId, members: members)
     }
 
     // MARK: - Cart item actions
+
     func addToCart(cartId: String, productId: String) {
-        guard let user,
-              let index = carts.firstIndex(where: { $0.id == cartId }) else {
-            return
-        }
+        guard let user, let index = carts.firstIndex(where: { $0.id == cartId }) else { return }
         let product = productFor(productId)
         if let itemIndex = carts[index].items.firstIndex(where: { $0.productId == productId }) {
             carts[index].items[itemIndex].qty += 1
-            notifyMutation(
-                cartId: cartId,
-                eventType: "qty",
-                productName: product?.name,
-                qty: carts[index].items[itemIndex].qty,
-                actorId: user.id,
-                actorName: user.name
-            )
+            notifyMutation(cartId: cartId, eventType: "qty", productName: product?.name, qty: carts[index].items[itemIndex].qty, actorId: user.id, actorName: user.name)
         } else {
-            let newItem = SharedCartItem(
-                productId: productId,
-                qty: 1,
-                addedById: user.id,
-                addedAt: Date().timeIntervalSince1970
-            )
+            let newItem = SharedCartItem(productId: productId, qty: 1, addedById: user.id, addedAt: Date().timeIntervalSince1970)
             carts[index].items.append(newItem)
-            notifyMutation(
-                cartId: cartId,
-                eventType: "add",
-                productName: product?.name,
-                qty: 1,
-                actorId: user.id,
-                actorName: user.name
-            )
+            notifyMutation(cartId: cartId, eventType: "add", productName: product?.name, qty: 1, actorId: user.id, actorName: user.name)
         }
-
-        // ✅ Save locally
-        PersonalCartStore.save(carts)
-
-        // ✅ Sync with all connected devices
-        syncCartState()
     }
+
     func setQty(cartId: String, productId: String, qty: Int) {
         guard let user, let index = carts.firstIndex(where: { $0.id == cartId }) else { return }
         let product = productFor(productId)
@@ -285,8 +251,6 @@ final class AppState {
             carts[index].items[itemIndex].qty = qty
             notifyMutation(cartId: cartId, eventType: "qty", productName: product?.name, qty: qty, actorId: user.id, actorName: user.name)
         }
-        PersonalCartStore.save(carts)
-        syncCartState()
     }
 
     func removeFromCart(cartId: String, productId: String) {
@@ -303,8 +267,6 @@ final class AppState {
             carts[destIndex].items.append(SharedCartItem(productId: productId, qty: qty, addedById: user.id, addedAt: Date().timeIntervalSince1970))
         }
         if carts[destIndex].isShared { broadcastSharedCarts() }
-        PersonalCartStore.save(carts)
-        syncCartState()
     }
 
     func checkoutCart(cartId: String) {
@@ -314,8 +276,6 @@ final class AppState {
             broadcastSharedCarts()
             socket.sendEvent(actorId: user.id, actorName: user.name, eventType: "checkout", productName: nil, qty: nil)
         }
-        PersonalCartStore.save(carts)
-        syncCartState()
     }
 
     private func notifyMutation(cartId: String, eventType: String, productName: String?, qty: Int?, actorId: String, actorName: String) {
@@ -333,29 +293,12 @@ final class AppState {
     // MARK: - Toasts
 
     func showToast(_ message: String) {
-        let toast = Toast(message: message)
         toasts.removeAll()
+        let toast = Toast(message: message)
         toasts.append(toast)
         Task {
             try? await Task.sleep(nanoseconds: 2_500_000_000)
             toasts.removeAll { $0.id == toast.id }
         }
-    }
-    
-    private func syncCartState() {
-        PersonalCartStore.save(carts)
-        socket.sendCartState(
-            carts: carts,
-            activeCartId: activeCartId,
-            members: members
-        )
-    }
-    
-    private func updateCart(_ cart: Cart) {
-        guard let index = carts.firstIndex(where: { $0.id == cart.id }) else {
-            return
-        }
-        carts[index] = cart
-        syncCartState()
     }
 }

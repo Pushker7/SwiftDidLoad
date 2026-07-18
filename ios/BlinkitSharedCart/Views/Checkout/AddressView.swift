@@ -1,8 +1,20 @@
 import SwiftUI
 
+struct MemberShare: Identifiable, Hashable {
+    let id: String
+    let name: String
+    let colorHex: String
+    let amount: Int
+}
+
 struct OrderSummary {
     let itemCount: Int
+    let subtotal: Int
+    let savings: Int
+    let deliveryFee: Int
     let total: Int
+    /// Per-member item cost, splitwise-style. Empty for personal (non-shared) carts.
+    let shares: [MemberShare]
 }
 
 struct AddressView: View {
@@ -65,13 +77,42 @@ struct AddressView: View {
     }
 
     private func placeOrder() {
-        let items = appState.cartFor(cartId)?.items ?? []
-        let subtotal = items.reduce(0) { total, item in
+        guard let cart = appState.cartFor(cartId) else { return }
+        let items = cart.items
+
+        func cost(of matching: [SharedCartItem]) -> Int {
+            matching.reduce(0) { total, item in
+                guard let product = appState.productFor(item.productId) else { return total }
+                return total + product.price * item.qty
+            }
+        }
+
+        let subtotal = cost(of: items)
+        let savings = items.reduce(0) { total, item in
             guard let product = appState.productFor(item.productId) else { return total }
-            return total + product.price * item.qty
+            return total + (product.mrp - product.price) * item.qty
         }
         let itemCount = items.reduce(0) { $0 + $1.qty }
-        placedSummary = OrderSummary(itemCount: itemCount, total: CartMath.estTotal(subtotal: subtotal))
+        let deliveryFee = CartMath.deliveryFee(subtotal: subtotal)
+
+        var shares: [MemberShare] = []
+        if cart.isShared {
+            shares = appState.members.compactMap { member in
+                let amount = cost(of: items.filter { $0.addedById == member.id })
+                guard amount > 0 else { return nil }
+                let name = member.id == appState.user?.id ? "You" : member.name
+                return MemberShare(id: member.id, name: name, colorHex: member.colorHex, amount: amount)
+            }
+        }
+
+        placedSummary = OrderSummary(
+            itemCount: itemCount,
+            subtotal: subtotal,
+            savings: savings,
+            deliveryFee: deliveryFee,
+            total: CartMath.estTotal(subtotal: subtotal),
+            shares: shares
+        )
         appState.checkoutCart(cartId: cartId)
     }
 }
