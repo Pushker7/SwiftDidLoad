@@ -1,10 +1,12 @@
 import SwiftUI
 
 struct ConnectForm: View {
+    
     @Environment(AppState.self) private var appState
     @State private var code = ""
     @State private var isConnecting = false
-
+    @Environment(\.dismiss) private var dismiss
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Add a person")
@@ -30,6 +32,7 @@ struct ConnectForm: View {
                 } label: {
                     if isConnecting {
                         ProgressView().tint(.white)
+                       
                     } else {
                         Text("Connect")
                             .font(.system(size: 14, weight: .semibold))
@@ -58,6 +61,7 @@ struct ConnectForm: View {
             await appState.connect(code: code)
             isConnecting = false
             if appState.connectError == nil { code = "" }
+            dismiss()
         }
     }
 }
