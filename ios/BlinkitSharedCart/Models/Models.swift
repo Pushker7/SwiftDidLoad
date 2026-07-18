@@ -32,17 +32,14 @@ struct SharedCartItem: Codable, Identifiable, Equatable {
     var id: String { productId }
 }
 
-struct SharedCart: Codable, Identifiable, Equatable {
+/// One named list. Personal carts (`isShared == false`) never leave the device;
+/// shared carts broadcast over the P2P session to whoever is in `memberIds`.
+struct Cart: Codable, Identifiable, Equatable {
     let id: String
-    let name: String
+    var name: String
+    var isShared: Bool
     var memberIds: [String]
     var items: [SharedCartItem]
-}
-
-struct PersonalCartItem: Codable, Identifiable, Equatable {
-    let productId: String
-    var qty: Int
-    var id: String { productId }
 }
 
 struct ProductsResponse: Codable {
@@ -52,17 +49,6 @@ struct ProductsResponse: Codable {
 
 struct UserResponse: Codable {
     let user: User
-}
-
-struct ConnectResponse: Codable {
-    let user: User
-    let cart: SharedCart
-    let members: [User]
-}
-
-struct CartResponse: Codable {
-    let cart: SharedCart
-    let members: [User]
 }
 
 struct APIErrorBody: Codable {

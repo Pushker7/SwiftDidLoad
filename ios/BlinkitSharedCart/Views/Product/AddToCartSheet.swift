@@ -21,25 +21,19 @@ struct AddToCartSheet: View {
             }
             .padding(.top, 8)
 
-            VStack(spacing: 12) {
-                optionButton(
-                    emoji: "🛍️",
-                    title: "My Cart",
-                    subtitle: "Just for you, private"
-                ) {
-                    appState.addToPersonalCart(productId: product.id)
-                    appState.showToast("Added to My Cart")
-                    dismiss()
-                }
-
-                optionButton(
-                    emoji: "👨‍👩‍👧",
-                    title: "Shared Cart · Home Cart (live)",
-                    subtitle: "Everyone sees it instantly"
-                ) {
-                    appState.addToSharedCart(productId: product.id)
-                    appState.showToast("Added to Shared Cart")
-                    dismiss()
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(appState.carts) { cart in
+                        optionButton(
+                            emoji: cart.isShared ? "👨‍👩‍👧" : "🛍️",
+                            title: cart.name,
+                            subtitle: cart.isShared ? "Everyone sees it instantly" : "Just for you, private"
+                        ) {
+                            appState.addToCart(cartId: cart.id, productId: product.id)
+                            appState.showToast("Added to \(cart.name)")
+                            dismiss()
+                        }
+                    }
                 }
             }
 

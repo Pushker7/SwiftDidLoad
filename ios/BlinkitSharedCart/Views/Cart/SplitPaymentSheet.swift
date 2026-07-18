@@ -2,8 +2,9 @@ import SwiftUI
 
 struct SplitPaymentSheet: View {
     @Environment(AppState.self) private var appState
+    let cart: Cart
 
-    private var items: [SharedCartItem] { appState.sharedCart?.items ?? [] }
+    private var items: [SharedCartItem] { cart.items }
 
     private var cartTotal: Int {
         items.reduce(0) { total, item in

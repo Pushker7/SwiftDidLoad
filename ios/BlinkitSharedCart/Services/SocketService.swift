@@ -13,7 +13,7 @@ final class SocketService: NSObject {
     private var localUser: User?
     private var targetCode: String = ""
     
-    var onState: (@Sendable @MainActor (SharedCart, [User]) -> Void)?
+    var onState: (@Sendable @MainActor ([Cart], [User]) -> Void)?
     var onEvent: (@Sendable @MainActor (String, String, String, String?, Int?) -> Void)?
     var onPeerConnected: (@Sendable @MainActor (User) -> Void)?
     
@@ -74,17 +74,17 @@ final class SocketService: NSObject {
     }
     
     // Core cart synchronization methods
-    func sendCartState(cart: SharedCart, members: [User]) {
-        guard let cartData = try? JSONEncoder().encode(cart),
-              let cartJson = try? JSONSerialization.jsonObject(with: cartData) as? [String: Any],
+    func sendCartState(carts: [Cart], members: [User]) {
+        guard let cartsData = try? JSONEncoder().encode(carts),
+              let cartsJson = try? JSONSerialization.jsonObject(with: cartsData) as? [[String: Any]],
               let membersData = try? JSONEncoder().encode(members),
               let membersJson = try? JSONSerialization.jsonObject(with: membersData) as? [[String: Any]] else {
             return
         }
-        
+
         send([
             "type": "cart:state",
-            "cart": cartJson,
+            "carts": cartsJson,
             "members": membersJson
         ])
     }
@@ -165,12 +165,12 @@ extension SocketService: MCSessionDelegate {
                 }
             case "cart:state":
                 guard
-                    let cartData = try? JSONSerialization.data(withJSONObject: json["cart"] ?? [:]),
-                    let cart = try? JSONDecoder().decode(SharedCart.self, from: cartData),
+                    let cartsData = try? JSONSerialization.data(withJSONObject: json["carts"] ?? []),
+                    let carts = try? JSONDecoder().decode([Cart].self, from: cartsData),
                     let membersData = try? JSONSerialization.data(withJSONObject: json["members"] ?? []),
                     let members = try? JSONDecoder().decode([User].self, from: membersData)
                 else { return }
-                self.onState?(cart, members)
+                self.onState?(carts, members)
             case "cart:event":
                 let actorId = json["actorId"] as? String ?? ""
                 let actorName = json["actorName"] as? String ?? ""

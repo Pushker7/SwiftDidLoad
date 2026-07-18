@@ -2,11 +2,13 @@ import SwiftUI
 
 struct CartItemRow: View {
     @Environment(AppState.self) private var appState
+    let cart: Cart
     let item: SharedCartItem
     let product: Product
 
     private var adder: User? { appState.memberFor(item.addedById) }
     private var isYou: Bool { item.addedById == appState.user?.id }
+    private var otherCarts: [Cart] { appState.carts.filter { $0.id != cart.id } }
 
     var body: some View {
         HStack(spacing: 0) {
@@ -53,15 +55,17 @@ struct CartItemRow: View {
                 VStack(alignment: .trailing, spacing: 6) {
                     HStack(spacing: 8) {
                         QtyStepper(qty: item.qty) { newQty in
-                            appState.setSharedQty(productId: product.id, qty: newQty)
+                            appState.setQty(cartId: cart.id, productId: product.id, qty: newQty)
                         }
-                        
+
                         Menu {
-                            Button("Move to My Cart") {
-                                appState.moveToMyCart(productId: product.id, qty: item.qty)
+                            ForEach(otherCarts) { destination in
+                                Button("Move to \(destination.name)") {
+                                    appState.moveItem(productId: product.id, qty: item.qty, from: cart.id, to: destination.id)
+                                }
                             }
                             Button("Remove item", role: .destructive) {
-                                appState.removeFromSharedCart(productId: product.id)
+                                appState.removeFromCart(cartId: cart.id, productId: product.id)
                             }
                         } label: {
                             Image(systemName: "ellipsis")

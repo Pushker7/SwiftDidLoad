@@ -2,34 +2,34 @@ import SwiftUI
 
 struct PersonalCartView: View {
     @Environment(AppState.self) private var appState
-    @State private var viewModel = CartViewModel()
+    let cart: Cart
 
     private var subtotal: Int {
-        appState.personalCart.reduce(0) { total, item in
+        cart.items.reduce(0) { total, item in
             guard let product = appState.productFor(item.productId) else { return total }
             return total + product.price * item.qty
         }
     }
 
     private var itemCount: Int {
-        appState.personalCart.reduce(0) { $0 + $1.qty }
+        cart.items.reduce(0) { $0 + $1.qty }
     }
 
     var body: some View {
         Group {
-            if appState.personalCart.isEmpty {
+            if cart.items.isEmpty {
                 emptyState
             } else {
                 ScrollView {
                     VStack(spacing: 14) {
                         deliveryNudgeHeader
-                        
+
                         // Cart items list with Liquid Glass style
                         VStack(spacing: 0) {
-                            ForEach(Array(appState.personalCart.enumerated()), id: \.element.id) { index, item in
+                            ForEach(Array(cart.items.enumerated()), id: \.element.id) { index, item in
                                 if let product = appState.productFor(item.productId) {
-                                    PersonalCartRow(product: product, qty: item.qty)
-                                    if index < appState.personalCart.count - 1 {
+                                    PersonalCartRow(cart: cart, product: product, qty: item.qty)
+                                    if index < cart.items.count - 1 {
                                         Divider().background(Theme.border.opacity(0.5))
                                     }
                                 }
@@ -47,9 +47,9 @@ struct PersonalCartView: View {
         }
         .background(Theme.background.ignoresSafeArea())
         .safeAreaInset(edge: .bottom) {
-            if !appState.personalCart.isEmpty {
+            if !cart.items.isEmpty {
                 NavigationLink {
-                    AddressView(cartType: .personal)
+                    AddressView(cartId: cart.id)
                 } label: {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
@@ -121,7 +121,7 @@ struct PersonalCartView: View {
     }
 
     private var youMightAlsoLikeSection: some View {
-        let currentProductIds = Set(appState.personalCart.map { $0.productId })
+        let currentProductIds = Set(cart.items.map { $0.productId })
         let suggestions = appState.products.filter { !currentProductIds.contains($0.id) }.prefix(6)
         
         return VStack(alignment: .leading, spacing: 10) {
@@ -156,8 +156,8 @@ struct PersonalCartView: View {
                                     .foregroundStyle(Theme.textPrimary)
                                 Spacer()
                                 Button {
-                                    appState.addToPersonalCart(productId: product.id)
-                                    appState.showToast("Added to My Cart")
+                                    appState.addToCart(cartId: cart.id, productId: product.id)
+                                    appState.showToast("Added to \(cart.name)")
                                 } label: {
                                     Image(systemName: "plus")
                                         .font(.system(size: 10, weight: .bold))
@@ -199,8 +199,13 @@ struct PersonalCartView: View {
 
 struct PersonalCartRow: View {
     @Environment(AppState.self) private var appState
+    let cart: Cart
     let product: Product
     let qty: Int
+
+    private var otherCarts: [Cart] {
+        appState.carts.filter { $0.id != cart.id }
+    }
 
     var body: some View {
         HStack(spacing: 12) {
@@ -234,17 +239,21 @@ struct PersonalCartRow: View {
                     }
                     .buttonStyle(.plain)
 
-                    // Move to Shared Cart
-                    if appState.hasConnections {
-                        Button {
-                            moveToSharedCart()
+                    // Move to another list
+                    if !otherCarts.isEmpty {
+                        Menu {
+                            ForEach(otherCarts) { destination in
+                                Button(destination.name) {
+                                    appState.moveItem(productId: product.id, qty: qty, from: cart.id, to: destination.id)
+                                    appState.showToast("Moved to \(destination.name)")
+                                }
+                            }
                         } label: {
-                            Text("Move to Shared Cart")
+                            Text("Move to another list")
                                 .font(.system(size: 12, weight: .semibold))
                                 .foregroundStyle(Theme.primary)
                                 .underline()
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }
@@ -254,7 +263,7 @@ struct PersonalCartRow: View {
             // Stepper & Pricing
             VStack(alignment: .trailing, spacing: 6) {
                 QtyStepper(qty: qty) { newQty in
-                    appState.setPersonalQty(productId: product.id, qty: newQty)
+                    appState.setQty(cartId: cart.id, productId: product.id, qty: newQty)
                 }
                 
                 HStack(spacing: 4) {
@@ -275,9 +284,9 @@ struct PersonalCartRow: View {
     }
 
     private func moveToWishlist() {
-        // Remove from personal cart
-        appState.setPersonalQty(productId: product.id, qty: 0)
-        
+        // Remove from this cart
+        appState.setQty(cartId: cart.id, productId: product.id, qty: 0)
+
         // Add to wishlist
         var list = UserDefaults.standard.stringArray(forKey: "wishlist") ?? []
         if !list.contains(product.id) {
@@ -285,17 +294,5 @@ struct PersonalCartRow: View {
             UserDefaults.standard.set(list, forKey: "wishlist")
         }
         appState.showToast("Moved to Liked Items")
-    }
-
-    private func moveToSharedCart() {
-        // Move from personal to shared
-        appState.setPersonalQty(productId: product.id, qty: 0)
-        appState.addToSharedCart(productId: product.id)
-        if qty > 1 {
-            for _ in 1..<qty {
-                appState.addToSharedCart(productId: product.id)
-            }
-        }
-        appState.showToast("Moved to Shared Cart")
     }
 }

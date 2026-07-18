@@ -3,6 +3,12 @@ import SwiftUI
 struct CategoryListView: View {
     @Environment(AppState.self) private var appState
     @State private var viewModel = CategoryListViewModel()
+    var initialCategoryId: String?
+
+    private var activeCategoryLabel: String {
+        let activeId = viewModel.selectedCategoryId ?? appState.categories.first?.id
+        return appState.categories.first { $0.id == activeId }?.label ?? "Categories"
+    }
 
     var body: some View {
         HStack(spacing: 0) {
@@ -15,9 +21,9 @@ struct CategoryListView: View {
             // Right product browser panel
             VStack(spacing: 12) {
                 searchAndFilterHeader
-                
+
                 let products = viewModel.sortedProducts(appState: appState)
-                
+
                 if products.isEmpty {
                     emptyResultState
                 } else {
@@ -27,8 +33,13 @@ struct CategoryListView: View {
             .padding(.top, 10)
             .background(Theme.background)
         }
-        .navigationTitle("Vegetables & Fruits")
+        .navigationTitle(activeCategoryLabel)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            if viewModel.selectedCategoryId == nil {
+                viewModel.selectedCategoryId = initialCategoryId
+            }
+        }
     }
 
     private var categorySidebar: some View {

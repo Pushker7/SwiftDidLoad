@@ -3,11 +3,12 @@ import SwiftUI
 struct SharedCartView: View {
     @Environment(AppState.self) private var appState
     @State private var viewModel = CartViewModel()
+    let cart: Cart
 
-    private var items: [SharedCartItem] { appState.sharedCart?.items ?? [] }
+    private var items: [SharedCartItem] { cart.items }
 
     private var visibleItems: [SharedCartItem] {
-        viewModel.sortedSharedItems(appState: appState)
+        viewModel.sortedItems(cart: cart, appState: appState)
     }
 
     private var subtotal: Int {
@@ -27,7 +28,7 @@ struct SharedCartView: View {
     private var itemCount: Int { items.reduce(0) { $0 + $1.qty } }
 
     private var duplicateProductIds: [String] {
-        viewModel.duplicateProductIds(appState: appState)
+        viewModel.duplicateProductIds(cart: cart)
     }
 
     private var duplicateItemsCount: Int {
@@ -73,7 +74,7 @@ struct SharedCartView: View {
                 VStack(spacing: 0) {
                     // Navigation to Address Selection
                     NavigationLink {
-                        AddressView(cartType: .shared)
+                        AddressView(cartId: cart.id)
                     } label: {
                         HStack {
                             VStack(alignment: .leading, spacing: 2) {
@@ -149,7 +150,7 @@ struct SharedCartView: View {
                 .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $viewModel.showingSplitSheet) {
-            SplitPaymentSheet()
+            SplitPaymentSheet(cart: cart)
                 .presentationDetents([.medium])
                 .presentationDragIndicator(.visible)
         }
@@ -399,7 +400,7 @@ struct SharedCartView: View {
                         VStack(spacing: 0) {
                             ForEach(Array(memberItems.enumerated()), id: \.element.id) { idx, item in
                                 if let product = appState.productFor(item.productId) {
-                                    CartItemRow(item: item, product: product)
+                                    CartItemRow(cart: cart, item: item, product: product)
                                     if idx < memberItems.count - 1 {
                                         Divider().background(Theme.border.opacity(0.5))
                                     }
@@ -491,7 +492,7 @@ struct SharedCartView: View {
                             Spacer()
                             
                             Button {
-                                appState.addToSharedCart(productId: product.id)
+                                appState.addToCart(cartId: cart.id, productId: product.id)
                                 appState.showToast("Added \(product.name) to Home Cart!")
                             } label: {
                                 Text("ADD")
@@ -551,7 +552,7 @@ struct SharedCartView: View {
                                             Spacer()
                                             
                                             QtyStepper(qty: item.qty) { newQty in
-                                                appState.setSharedQty(productId: pid, qty: newQty)
+                                                appState.setQty(cartId: cart.id, productId: pid, qty: newQty)
                                             }
                                         }
                                         .padding(.horizontal, 6)

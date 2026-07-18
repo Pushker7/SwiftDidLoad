@@ -283,9 +283,7 @@ struct ProfileView: View {
                             Spacer()
                             
                             Button {
-                                appState.user?.sharedCartId = nil
-                                appState.sharedCart = nil
-                                appState.members = []
+                                appState.disconnectPeer()
                                 appState.showToast("Left the Home Cart successfully")
                             } label: {
                                 Text("Leave")
@@ -477,8 +475,10 @@ struct ProfileView: View {
                                 }
                                 Spacer()
                                 Button {
-                                    appState.addToPersonalCart(productId: product.id)
-                                    appState.showToast("Added to My Cart!")
+                                    if let cart = appState.activeCart {
+                                        appState.addToCart(cartId: cart.id, productId: product.id)
+                                        appState.showToast("Added to \(cart.name)!")
+                                    }
                                 } label: {
                                     Text("Add")
                                         .font(.system(size: 11, weight: .bold))
