@@ -32,9 +32,9 @@ struct SuccessView: View {
             Spacer()
             Spacer()
         }
-        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity)
         .background(Theme.background.ignoresSafeArea())
-        .navigationBarBackButtonHidden(true)
-        .toolbar(.hidden, for: .navigationBar)
+        .navigationBarBackButtonHidden(false)
+        .toolbar(.visible, for: .navigationBar)
     }
 }

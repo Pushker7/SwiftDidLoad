@@ -88,7 +88,7 @@ struct ProductCard: View {
                 }
                 
                 Spacer()
-                
+                Spacer()
                 // Adaptive Add Button / Stepper
                 if totalQty > 0 {
                     stepperControl
@@ -97,6 +97,7 @@ struct ProductCard: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity)
         .padding(10)
         .background(Theme.card)
         .clipShape(RoundedRectangle(cornerRadius: 12))
@@ -124,6 +125,7 @@ struct ProductCard: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(Theme.primary, lineWidth: 1.5))
         }
+        .layoutPriority(1)
         .buttonStyle(.plain)
     }
 
