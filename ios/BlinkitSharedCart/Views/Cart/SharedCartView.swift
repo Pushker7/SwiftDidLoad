@@ -4,37 +4,37 @@ struct SharedCartView: View {
     @Environment(AppState.self) private var appState
     @State private var viewModel = CartViewModel()
     let cart: Cart
-
+    
     private var items: [SharedCartItem] { cart.items }
-
+    
     private var visibleItems: [SharedCartItem] {
         viewModel.sortedItems(cart: cart, appState: appState)
     }
-
+    
     private var subtotal: Int {
         items.reduce(0) { total, item in
             guard let product = appState.productFor(item.productId) else { return total }
             return total + product.price * item.qty
         }
     }
-
+    
     private var savings: Int {
         items.reduce(0) { total, item in
             guard let product = appState.productFor(item.productId) else { return total }
             return total + (product.mrp - product.price) * item.qty
         }
     }
-
+    
     private var itemCount: Int { items.reduce(0) { $0 + $1.qty } }
-
+    
     private var duplicateProductIds: [String] {
         viewModel.duplicateProductIds(cart: cart)
     }
-
+    
     private var duplicateItemsCount: Int {
         duplicateProductIds.count
     }
-
+    
     var body: some View {
         Group {
             if items.isEmpty {
@@ -166,7 +166,7 @@ struct SharedCartView: View {
             duplicatesReviewSheetView
         }
     }
-
+    
     private var groupHeader: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
@@ -208,7 +208,7 @@ struct SharedCartView: View {
         .liquidGlassBackground()
         .padding(.horizontal, 16)
     }
-
+    
     private var savingsBanner: some View {
         HStack(spacing: 8) {
             Image(systemName: "tag.fill")
@@ -231,7 +231,7 @@ struct SharedCartView: View {
         .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(hex: "FEF3C7"), lineWidth: 1))
         .padding(.horizontal, 16)
     }
-
+    
     private var metaRow: some View {
         HStack {
             Text("\(itemCount) items · Est. total ₹\(CartMath.estTotal(subtotal: subtotal))")
@@ -244,7 +244,7 @@ struct SharedCartView: View {
         }
         .padding(.horizontal, 16)
     }
-
+    
     private var duplicatesWarningBanner: some View {
         HStack(spacing: 12) {
             Image(systemName: "exclamationmark.triangle.fill")
@@ -288,7 +288,7 @@ struct SharedCartView: View {
         .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(hex: "FEF3C7"), lineWidth: 1))
         .padding(.horizontal, 16)
     }
-
+    
     private var itemsHeader: some View {
         HStack {
             Text("Items in cart")
@@ -312,7 +312,7 @@ struct SharedCartView: View {
         }
         .padding(.horizontal, 16)
     }
-
+    
     private func filterChip(for memberId: String) -> some View {
         let name = memberId == appState.user?.id ? "You" : (appState.memberFor(memberId)?.name ?? "")
         return Button {
@@ -330,7 +330,7 @@ struct SharedCartView: View {
         }
         .buttonStyle(.plain)
     }
-
+    
     private func memberGroupSection(member: User) -> some View {
         let isYou = member.id == appState.user?.id
         let memberItems = visibleItems.filter { $0.addedById == member.id }
@@ -386,7 +386,7 @@ struct SharedCartView: View {
                 .background(Color.white.opacity(0.35))
             }
             .buttonStyle(.plain)
-
+            
             if isExpanded {
                 VStack(spacing: 0) {
                     Divider().background(Theme.border.opacity(0.5))
@@ -410,29 +410,36 @@ struct SharedCartView: View {
                     }
                     
                     // Add items local button
-                    Button {
-                        viewModel.showingAddProductSheet = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "plus")
-                                .font(.system(size: 12, weight: .bold))
-                            Text("Add item")
-                                .font(.system(size: 12, weight: .bold))
+                    if isYou {
+                        Button {
+                            viewModel.showingAddProductSheet = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 12, weight: .bold))
+                                Text("Add item")
+                                    .font(.system(size: 12, weight: .bold))
+                            }
+                            .foregroundStyle(Theme.primary)
+                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity)
+                            .background(Theme.primary.opacity(0.04))
+                            .overlay(
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundStyle(Theme.border.opacity(0.5)),
+                                alignment: .top
+                            )
                         }
-                        .foregroundStyle(Theme.primary)
-                        .padding(.vertical, 10)
-                        .frame(maxWidth: .infinity)
-                        .background(Theme.primary.opacity(0.04))
-                        .overlay(Rectangle().frame(height: 1).foregroundStyle(Theme.border.opacity(0.5)), alignment: .top)
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
                 .background(Color.white.opacity(0.15))
             }
         }
         .liquidGlassBackground()
     }
-
+    
     private var emptyState: some View {
         VStack(spacing: 16) {
             Spacer()
@@ -463,9 +470,9 @@ struct SharedCartView: View {
             Spacer()
         }
     }
-
+    
     // MARK: - Sub Sheets
-
+    
     private var addProductSheetView: some View {
         VStack(spacing: 16) {
             Text("Add Item to Shared Cart")
@@ -514,7 +521,7 @@ struct SharedCartView: View {
         }
         .background(Theme.background)
     }
-
+    
     private var duplicatesReviewSheetView: some View {
         VStack(spacing: 16) {
             Text("Review Duplicate Items")
@@ -527,7 +534,7 @@ struct SharedCartView: View {
                 .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 20)
-
+            
             ScrollView {
                 VStack(spacing: 16) {
                     ForEach(duplicateProductIds, id: \.self) { pid in

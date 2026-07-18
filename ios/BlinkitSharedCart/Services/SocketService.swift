@@ -13,7 +13,7 @@ final class SocketService: NSObject {
     private var localUser: User?
     private var targetCode: String = ""
     
-    var onState: (@Sendable @MainActor ([Cart], [User]) -> Void)?
+    var onState: (@Sendable @MainActor ([Cart], String?, [User]) -> Void)?
     var onEvent: (@Sendable @MainActor (String, String, String, String?, Int?) -> Void)?
     var onPeerConnected: (@Sendable @MainActor (User) -> Void)?
     
@@ -74,17 +74,20 @@ final class SocketService: NSObject {
     }
     
     // Core cart synchronization methods
-    func sendCartState(carts: [Cart], members: [User]) {
-        guard let cartsData = try? JSONEncoder().encode(carts),
-              let cartsJson = try? JSONSerialization.jsonObject(with: cartsData) as? [[String: Any]],
-              let membersData = try? JSONEncoder().encode(members),
-              let membersJson = try? JSONSerialization.jsonObject(with: membersData) as? [[String: Any]] else {
+    func sendCartState(carts: [Cart], activeCartId: String?, members: [User]) {
+        guard
+            let cartsData = try? JSONEncoder().encode(carts),
+            let cartsJson = try? JSONSerialization.jsonObject(with: cartsData) as? [[String: Any]],
+
+            let membersData = try? JSONEncoder().encode(members),
+            let membersJson = try? JSONSerialization.jsonObject(with: membersData) as? [[String: Any]]
+        else {
             return
         }
-
         send([
             "type": "cart:state",
             "carts": cartsJson,
+            "activeCartId": activeCartId ?? "",
             "members": membersJson
         ])
     }
@@ -169,8 +172,15 @@ extension SocketService: MCSessionDelegate {
                     let carts = try? JSONDecoder().decode([Cart].self, from: cartsData),
                     let membersData = try? JSONSerialization.data(withJSONObject: json["members"] ?? []),
                     let members = try? JSONDecoder().decode([User].self, from: membersData)
-                else { return }
-                self.onState?(carts, members)
+                else {
+                    return
+                }
+                let activeCartId = json["activeCartId"] as? String
+                self.onState?(
+                    carts,
+                    activeCartId?.isEmpty == true ? nil : activeCartId,
+                    members
+                )
             case "cart:event":
                 let actorId = json["actorId"] as? String ?? ""
                 let actorName = json["actorName"] as? String ?? ""

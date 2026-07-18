@@ -125,10 +125,20 @@ final class AppState {
     }
 
     private func setupSocketCallbacks() {
-        socket.onState = { [weak self] incomingCarts, incomingMembers in
+        socket.onState = { [weak self] carts, activeCartId, members in
             guard let self else { return }
-            self.mergeIncoming(carts: incomingCarts)
-            self.members = incomingMembers
+            self.carts = carts
+            self.members = members
+            if let activeCartId,
+               carts.contains(where: { $0.id == activeCartId }) {
+
+                self.activeCartId = activeCartId
+
+            } else {
+
+                self.activeCartId = carts.first?.id ?? ""
+            }
+            PersonalCartStore.save(carts)
         }
         socket.onEvent = { [weak self] actorId, actorName, eventType, productName, qty in
             self?.handleEvent(actorId: actorId, actorName: actorName, eventType: eventType, productName: productName, qty: qty)
@@ -186,15 +196,16 @@ final class AppState {
         carts.append(newCart)
         activeCartId = newCart.id
         if isShared { broadcastSharedCarts() }
+        syncCartState()
         return newCart
     }
 
     func deleteCart(id: String) {
-        guard carts.count > 1 else { return }
         carts.removeAll { $0.id == id }
         if activeCartId == id {
             activeCartId = carts.first?.id ?? ""
         }
+        syncCartState()
     }
 
     /// Toggle a cart between personal and shared. Turning sharing on immediately
@@ -204,6 +215,7 @@ final class AppState {
         carts[index].isShared = isShared
         carts[index].memberIds = isShared ? members.map { $0.id } : []
         if isShared { broadcastSharedCarts() }
+        syncCartState()
     }
 
     /// Disconnects the peer and demotes every shared cart back to personal (kept locally, no data loss).
@@ -213,29 +225,56 @@ final class AppState {
             carts[index].isShared = false
             carts[index].memberIds = []
         }
+        PersonalCartStore.save(carts)
     }
 
     private func broadcastSharedCarts() {
         let shared = carts.filter { $0.isShared }
         guard !shared.isEmpty else { return }
-        socket.sendCartState(carts: shared, members: members)
+        socket.sendCartState(carts: carts, activeCartId: activeCartId, members: members)
     }
 
     // MARK: - Cart item actions
-
     func addToCart(cartId: String, productId: String) {
-        guard let user, let index = carts.firstIndex(where: { $0.id == cartId }) else { return }
+        guard let user,
+              let index = carts.firstIndex(where: { $0.id == cartId }) else {
+            return
+        }
         let product = productFor(productId)
         if let itemIndex = carts[index].items.firstIndex(where: { $0.productId == productId }) {
             carts[index].items[itemIndex].qty += 1
-            notifyMutation(cartId: cartId, eventType: "qty", productName: product?.name, qty: carts[index].items[itemIndex].qty, actorId: user.id, actorName: user.name)
+            notifyMutation(
+                cartId: cartId,
+                eventType: "qty",
+                productName: product?.name,
+                qty: carts[index].items[itemIndex].qty,
+                actorId: user.id,
+                actorName: user.name
+            )
         } else {
-            let newItem = SharedCartItem(productId: productId, qty: 1, addedById: user.id, addedAt: Date().timeIntervalSince1970)
+            let newItem = SharedCartItem(
+                productId: productId,
+                qty: 1,
+                addedById: user.id,
+                addedAt: Date().timeIntervalSince1970
+            )
             carts[index].items.append(newItem)
-            notifyMutation(cartId: cartId, eventType: "add", productName: product?.name, qty: 1, actorId: user.id, actorName: user.name)
+            notifyMutation(
+                cartId: cartId,
+                eventType: "add",
+                productName: product?.name,
+                qty: 1,
+                actorId: user.id,
+                actorName: user.name
+            )
         }
-    }
 
+        // ✅ Save locally
+        PersonalCartStore.save(carts)
+
+        // ✅ Sync with all connected devices
+        syncCartState()
+    }
     func setQty(cartId: String, productId: String, qty: Int) {
         guard let user, let index = carts.firstIndex(where: { $0.id == cartId }) else { return }
         let product = productFor(productId)
@@ -246,6 +285,8 @@ final class AppState {
             carts[index].items[itemIndex].qty = qty
             notifyMutation(cartId: cartId, eventType: "qty", productName: product?.name, qty: qty, actorId: user.id, actorName: user.name)
         }
+        PersonalCartStore.save(carts)
+        syncCartState()
     }
 
     func removeFromCart(cartId: String, productId: String) {
@@ -262,6 +303,8 @@ final class AppState {
             carts[destIndex].items.append(SharedCartItem(productId: productId, qty: qty, addedById: user.id, addedAt: Date().timeIntervalSince1970))
         }
         if carts[destIndex].isShared { broadcastSharedCarts() }
+        PersonalCartStore.save(carts)
+        syncCartState()
     }
 
     func checkoutCart(cartId: String) {
@@ -271,6 +314,8 @@ final class AppState {
             broadcastSharedCarts()
             socket.sendEvent(actorId: user.id, actorName: user.name, eventType: "checkout", productName: nil, qty: nil)
         }
+        PersonalCartStore.save(carts)
+        syncCartState()
     }
 
     private func notifyMutation(cartId: String, eventType: String, productName: String?, qty: Int?, actorId: String, actorName: String) {
@@ -295,5 +340,22 @@ final class AppState {
             try? await Task.sleep(nanoseconds: 2_500_000_000)
             toasts.removeAll { $0.id == toast.id }
         }
+    }
+    
+    private func syncCartState() {
+        PersonalCartStore.save(carts)
+        socket.sendCartState(
+            carts: carts,
+            activeCartId: activeCartId,
+            members: members
+        )
+    }
+    
+    private func updateCart(_ cart: Cart) {
+        guard let index = carts.firstIndex(where: { $0.id == cart.id }) else {
+            return
+        }
+        carts[index] = cart
+        syncCartState()
     }
 }
