@@ -170,7 +170,7 @@ struct SharedCartView: View {
     private var groupHeader: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Home Cart")
+                Text("\(cart.name) cart")
                     .font(.system(size: 18, weight: .black, design: .rounded))
                     .foregroundStyle(Theme.textPrimary)
                 HStack(spacing: -6) {

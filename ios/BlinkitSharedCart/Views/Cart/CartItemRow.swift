@@ -37,16 +37,16 @@ struct CartItemRow: View {
                         .font(.system(size: 11))
                         .foregroundStyle(Theme.textSecondary)
 
-                    HStack(spacing: 4) {
-                        avatar(name: adder?.name ?? "?", hex: adder?.colorHex ?? memberColors[0], size: 14)
-                        Text("Added by \(isYou ? "You" : adder?.name ?? "?")")
-                            .font(.system(size: 10, weight: .bold))
-                    }
-                    .foregroundStyle(Color(hex: adder?.colorHex ?? memberColors[0]))
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(Color(hex: adder?.colorHex ?? memberColors[0]).opacity(0.1))
-                    .clipShape(Capsule())
+//                    HStack(spacing: 4) {
+//                        avatar(name: adder?.name ?? "?", hex: adder?.colorHex ?? memberColors[0], size: 14)
+//                       // Text("Added by \(isYou ? "You" : adder?.name ?? "?")")
+//                           // .font(.system(size: 10, weight: .bold))
+//                    }
+//                    .foregroundStyle(Color(hex: adder?.colorHex ?? memberColors[0]))
+//                    .padding(.horizontal, 6)
+//                    .padding(.vertical, 2)
+//                    .background(Color(hex: adder?.colorHex ?? memberColors[0]).opacity(0.1))
+//                    .clipShape(Capsule())
                 }
 
                 Spacer()

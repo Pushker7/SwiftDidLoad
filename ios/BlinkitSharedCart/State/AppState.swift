@@ -289,6 +289,7 @@ final class AppState {
 
     func showToast(_ message: String) {
         let toast = Toast(message: message)
+        toasts.removeAll()
         toasts.append(toast)
         Task {
             try? await Task.sleep(nanoseconds: 2_500_000_000)
