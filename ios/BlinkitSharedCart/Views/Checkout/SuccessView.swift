@@ -1,9 +1,14 @@
 import SwiftUI
+import UIKit
 
 struct SuccessView: View {
     @Environment(\.goHome) private var goHome
+    @Environment(AppState.self) private var appState
     let summary: OrderSummary
     @State private var orderId = String(format: "BLK-%04d", Int.random(in: 0...9999))
+    @State private var shareItems: [Any]?
+
+    private var ordererName: String { appState.user?.name ?? "the orderer" }
 
     var body: some View {
         ScrollView {
@@ -48,6 +53,11 @@ struct SuccessView: View {
                     Image(systemName: "chevron.left")
                         .foregroundStyle(Theme.textPrimary)
                 }
+            }
+        }
+        .sheet(isPresented: Binding(get: { shareItems != nil }, set: { if !$0 { shareItems = nil } })) {
+            if let shareItems {
+                ActivityShareSheet(activityItems: shareItems)
             }
         }
     }
@@ -101,29 +111,87 @@ struct SuccessView: View {
 
     private var splitSummaryCard: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Split summary")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(Theme.textSecondary)
+            HStack {
+                Text("Split summary")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Theme.textSecondary)
+                Spacer()
+                Button {
+                    shareSplit()
+                } label: {
+                    Label("Share", systemImage: "square.and.arrow.up")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Theme.primary)
+                }
+            }
 
             VStack(spacing: 8) {
                 ForEach(summary.shares) { share in
-                    HStack(spacing: 10) {
-                        avatar(name: share.name, hex: share.colorHex, size: 32)
-                        Text(share.name)
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(Theme.textPrimary)
-                        Spacer()
-                        Text("₹\(share.amount)")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(Theme.textPrimary)
-                    }
-                    .padding(10)
-                    .background(share.name == "You" ? Theme.primary.opacity(0.1) : Theme.background)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    shareRow(share)
                 }
             }
         }
         .padding(16)
         .cardBackground()
     }
+
+    private func shareRow(_ share: MemberShare) -> some View {
+        HStack(spacing: 10) {
+            avatar(name: share.name, hex: share.colorHex, size: 32)
+            Text(share.name)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(Theme.textPrimary)
+            Spacer()
+            Text("₹\(share.amount)")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(Theme.textPrimary)
+        }
+        .padding(10)
+        .background(share.name == "You" ? Theme.primary.opacity(0.1) : Theme.background)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+
+    /// Renders a standalone card (with the orderer named) to an image, and shares it
+    /// alongside a plain-text reminder — no link, just image + message for WhatsApp/Messages.
+    private func shareSplit() {
+        let renderer = ImageRenderer(content: shareableCard)
+        renderer.scale = UIScreen.main.scale
+        guard let image = renderer.uiImage else { return }
+
+        let message = "🧾 \(ordererName) placed the Blinkit order (\(orderId)). Please pay \(ordererName) your share shown below."
+        shareItems = [message, image]
+    }
+
+    private var shareableCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Pay \(ordererName)")
+                    .font(.system(size: 17, weight: .bold))
+                    .foregroundStyle(Theme.textPrimary)
+                Text("Order \(orderId) · ₹\(summary.total) total")
+                    .font(.system(size: 12))
+                    .foregroundStyle(Theme.textSecondary)
+            }
+
+            VStack(spacing: 8) {
+                ForEach(summary.shares) { share in
+                    shareRow(share)
+                }
+            }
+        }
+        .padding(16)
+        .frame(width: 320)
+        .background(Theme.card)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+private struct ActivityShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
