@@ -152,14 +152,14 @@ final class AppState {
             self.user?.sharedCartId = "shared-cart-p2p"
             
             if self.sharedCart == nil {
-                self.sharedCart = SharedCart(id: "shared-cart-p2p", name: "Home Cart", memberIds: [user.id, peerUser.id], items: [])
+                self.sharedCart = SharedCart(id: "shared-cart-p2p", name: "Shared Cart", memberIds: [user.id, peerUser.id], items: [])
             }
             
             // Send our cart state to the newly connected peer
             self.socket.sendCartState(cart: self.sharedCart!, members: self.members)
             self.socket.sendEvent(actorId: user.id, actorName: user.name, eventType: "join", productName: nil, qty: nil)
             
-            self.showToast("Connected with \(peerUser.name)! Home Cart is live 🎉")
+            self.showToast("Connected with \(peerUser.name)! Shared Cart is live 🎉")
             self.socket.stopDiscovery()
         }
     }
@@ -167,16 +167,10 @@ final class AppState {
     private func handleEvent(actorId: String, actorName: String, eventType: String, productName: String?, qty: Int?) {
         guard actorId != user?.id else { return }
         switch eventType {
-        case "add":
-            showToast("\(actorName) added \(productName ?? "an item")")
-        case "qty":
-            showToast("\(actorName) changed \(productName ?? "an item") to \(qty ?? 0)")
-        case "remove":
-            showToast("\(actorName) removed \(productName ?? "an item")")
         case "checkout":
             showToast("🎉 \(actorName) placed the Home Cart order")
         case "join":
-            showToast("\(actorName) joined Home Cart")
+            showToast("\(actorName) joined Shared Cart")
         default:
             break
         }
