@@ -191,7 +191,7 @@ struct HomeView: View {
     private var categoriesSection: some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4), spacing: 12) {
             ForEach(appState.categories) { category in
-                NavigationLink(destination: CategoryListView()) {
+                NavigationLink(destination: CategoryListView(initialCategoryId: category.id)) {
                     VStack(spacing: 8) {
                         Text(category.emoji)
                             .font(.system(size: 32))

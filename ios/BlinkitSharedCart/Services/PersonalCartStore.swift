@@ -1,16 +1,16 @@
 import Foundation
 
 enum PersonalCartStore {
-    private static let key = "personalCartItems"
+    private static let key = "carts"
 
-    static func load() -> [PersonalCartItem] {
+    static func load() -> [Cart] {
         guard let data = UserDefaults.standard.data(forKey: key),
-              let items = try? JSONDecoder().decode([PersonalCartItem].self, from: data) else { return [] }
-        return items
+              let carts = try? JSONDecoder().decode([Cart].self, from: data) else { return [] }
+        return carts
     }
 
-    static func save(_ items: [PersonalCartItem]) {
-        guard let data = try? JSONEncoder().encode(items) else { return }
+    static func save(_ carts: [Cart]) {
+        guard let data = try? JSONEncoder().encode(carts) else { return }
         UserDefaults.standard.set(data, forKey: key)
     }
 

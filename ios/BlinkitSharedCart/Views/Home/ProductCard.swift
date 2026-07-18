@@ -7,16 +7,11 @@ struct ProductCard: View {
     @State private var showingAddSheet = false
     @State private var isLiked = false
 
-    private var personalQty: Int {
-        appState.personalCart.first { $0.productId == product.id }?.qty ?? 0
-    }
-
-    private var sharedQty: Int {
-        appState.sharedCart?.items.first { $0.productId == product.id }?.qty ?? 0
-    }
-
+    /// Quantity shown/edited here always refers to the active cart (the one selected on the Cart tab).
     private var totalQty: Int {
-        personalQty + sharedQty
+        guard let activeCart = appState.activeCart else { return 0 }
+        let match = activeCart.items.first { $0.productId == product.id }
+        return match?.qty ?? 0
     }
 
     var body: some View {
@@ -165,29 +160,23 @@ struct ProductCard: View {
     // MARK: - Actions
 
     private func addTapped() {
-        if appState.hasConnections {
+        if appState.carts.count > 1 {
             showingAddSheet = true
-        } else {
-            appState.addToPersonalCart(productId: product.id)
-            appState.showToast("Added to My Cart")
+        } else if let cart = appState.activeCart {
+            appState.addToCart(cartId: cart.id, productId: product.id)
+            appState.showToast("Added to \(cart.name)")
         }
     }
 
     private func incrementQty() {
-        if sharedQty > 0 {
-            appState.addToSharedCart(productId: product.id)
-        } else {
-            appState.addToPersonalCart(productId: product.id)
-        }
+        guard let cart = appState.activeCart else { return }
+        appState.addToCart(cartId: cart.id, productId: product.id)
         appState.showToast("Added to cart")
     }
 
     private func decrementQty() {
-        if personalQty > 0 {
-            appState.setPersonalQty(productId: product.id, qty: personalQty - 1)
-        } else if sharedQty > 0 {
-            appState.setSharedQty(productId: product.id, qty: sharedQty - 1)
-        }
+        guard let cart = appState.activeCart else { return }
+        appState.setQty(cartId: cart.id, productId: product.id, qty: totalQty - 1)
         appState.showToast("Removed from cart")
     }
 

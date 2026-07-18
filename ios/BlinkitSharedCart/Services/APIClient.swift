@@ -97,12 +97,4 @@ enum APIClient {
     static func fetchProducts() async throws -> ProductsResponse {
         return ProductsResponse(categories: categoriesData, products: productsData)
     }
-
-    static func connect(userId: String, code: String) async throws -> ConnectResponse {
-        throw APIError.server("P2P matching should bypass HTTP API connection.")
-    }
-
-    static func fetchCart(id: String) async throws -> CartResponse {
-        throw APIError.server("P2P synchronization handles cart fetches.")
-    }
 }

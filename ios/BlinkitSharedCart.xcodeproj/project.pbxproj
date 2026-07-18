@@ -131,7 +131,6 @@
 				3070795CBAFA4C0CFFCC7BDE /* SortFilterSheet.swift */,
 				969D5ABD9C03C3BC0E3ED36A /* SplitPaymentSheet.swift */,
 			);
-			name = Cart;
 			path = Cart;
 			sourceTree = "<group>";
 		};
@@ -149,7 +148,6 @@
 				9E0184CB587657B372C5CE83 /* ViewModels */,
 				C84C9D972537F8168972128F /* Views */,
 			);
-			name = BlinkitSharedCart;
 			path = BlinkitSharedCart;
 			sourceTree = "<group>";
 		};
@@ -160,7 +158,6 @@
 				2700D1A6CC59C36D19E488BC /* PersonalCartStore.swift */,
 				98A48D3D4A1CFD8FAD0F35F1 /* SocketService.swift */,
 			);
-			name = Services;
 			path = Services;
 			sourceTree = "<group>";
 		};
@@ -170,7 +167,6 @@
 				B7E9126D7BB21545F40BB4E1 /* AddressView.swift */,
 				53B68AF938F9F83AB84C8FC1 /* SuccessView.swift */,
 			);
-			name = Checkout;
 			path = Checkout;
 			sourceTree = "<group>";
 		};
@@ -181,7 +177,6 @@
 				C46A7101E33E1166490118FE /* MyCodeSheet.swift */,
 				8FF72498015952566DAAE267 /* ProfileView.swift */,
 			);
-			name = Profile;
 			path = Profile;
 			sourceTree = "<group>";
 		};
@@ -201,7 +196,6 @@
 				F3FF6AC00E416ECADCD8B05F /* HomeViewModel.swift */,
 				944716F488241732346285CF /* ProfileViewModel.swift */,
 			);
-			name = ViewModels;
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
@@ -210,7 +204,6 @@
 			children = (
 				6EE62A1E0406FDAFA7C92A9A /* AppState.swift */,
 			);
-			name = State;
 			path = State;
 			sourceTree = "<group>";
 		};
@@ -219,7 +212,6 @@
 			children = (
 				C2880C6B252BFE985BB0D7BC /* Models.swift */,
 			);
-			name = Models;
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -235,7 +227,6 @@
 				C0EF781B18C40FB9642E5D29 /* RootTabView.swift */,
 				96F0EABFCF682B8D722C0C25 /* ToastOverlay.swift */,
 			);
-			name = Views;
 			path = Views;
 			sourceTree = "<group>";
 		};
@@ -245,7 +236,6 @@
 				961FB85A528E1457E73748A5 /* HomeView.swift */,
 				01E3BE20A082D361D0398EE8 /* ProductCard.swift */,
 			);
-			name = Home;
 			path = Home;
 			sourceTree = "<group>";
 		};
@@ -255,7 +245,6 @@
 				778F351FCB5D6B319B30F8D3 /* AddToCartSheet.swift */,
 				0AF04854BEA244AE3DB4CDA9 /* CategoryListView.swift */,
 			);
-			name = Product;
 			path = Product;
 			sourceTree = "<group>";
 		};
@@ -287,6 +276,12 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					1EFB7411712DC5A119FF43C3 = {
+						DevelopmentTeam = H3P8FQHNB7;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 26D1DA58CE8CA92FD604C181 /* Build configuration list for PBXProject "BlinkitSharedCart" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -297,8 +292,6 @@
 				Base,
 			);
 			mainGroup = 68CA7D63776DE673AAFD6EA8;
-			minimizedProjectReferenceProxies = 0;
-			preferredProjectObjectVersion = 100;
 			productRefGroup = 98FEAB9596E423AF35C628BF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -369,7 +362,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = H3P8FQHNB7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = BlinkitSharedCart/Info.plist;
@@ -493,8 +486,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -506,7 +498,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = H3P8FQHNB7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = BlinkitSharedCart/Info.plist;

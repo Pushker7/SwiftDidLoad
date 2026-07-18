@@ -26,8 +26,8 @@ final class CartViewModel {
         expandedUsers.contains(memberId)
     }
 
-    func sortedSharedItems(appState: AppState) -> [SharedCartItem] {
-        let items = appState.sharedCart?.items ?? []
+    func sortedItems(cart: Cart, appState: AppState) -> [SharedCartItem] {
+        let items = cart.items
         var result = items
         
         if let filterMemberId {
@@ -53,8 +53,8 @@ final class CartViewModel {
         return result
     }
 
-    func duplicateProductIds(appState: AppState) -> [String] {
-        let items = appState.sharedCart?.items ?? []
+    func duplicateProductIds(cart: Cart) -> [String] {
+        let items = cart.items
         let pids = items.map { $0.productId }
         let uniquePids = Set(pids)
         var duplicates: [String] = []

@@ -1,9 +1,5 @@
 import SwiftUI
 
-enum CartCheckoutType {
-    case personal, shared
-}
-
 struct OrderSummary {
     let itemCount: Int
     let total: Int
@@ -11,7 +7,7 @@ struct OrderSummary {
 
 struct AddressView: View {
     @Environment(AppState.self) private var appState
-    let cartType: CartCheckoutType
+    let cartId: String
     @State private var placedSummary: OrderSummary?
 
     var body: some View {
@@ -69,25 +65,14 @@ struct AddressView: View {
     }
 
     private func placeOrder() {
-        switch cartType {
-        case .personal:
-            let subtotal = appState.personalCart.reduce(0) { total, item in
-                guard let product = appState.productFor(item.productId) else { return total }
-                return total + product.price * item.qty
-            }
-            let itemCount = appState.personalCart.reduce(0) { $0 + $1.qty }
-            placedSummary = OrderSummary(itemCount: itemCount, total: CartMath.estTotal(subtotal: subtotal))
-            appState.clearPersonalCart()
-        case .shared:
-            let items = appState.sharedCart?.items ?? []
-            let subtotal = items.reduce(0) { total, item in
-                guard let product = appState.productFor(item.productId) else { return total }
-                return total + product.price * item.qty
-            }
-            let itemCount = items.reduce(0) { $0 + $1.qty }
-            placedSummary = OrderSummary(itemCount: itemCount, total: CartMath.estTotal(subtotal: subtotal))
-            appState.checkoutSharedCart()
+        let items = appState.cartFor(cartId)?.items ?? []
+        let subtotal = items.reduce(0) { total, item in
+            guard let product = appState.productFor(item.productId) else { return total }
+            return total + product.price * item.qty
         }
+        let itemCount = items.reduce(0) { $0 + $1.qty }
+        placedSummary = OrderSummary(itemCount: itemCount, total: CartMath.estTotal(subtotal: subtotal))
+        appState.checkoutCart(cartId: cartId)
     }
 }
 
