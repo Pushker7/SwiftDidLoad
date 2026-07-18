@@ -116,7 +116,7 @@ struct ProductCard: View {
             addTapped()
         } label: {
             Text("ADD")
-                .font(.system(size: 12, weight: .bold))
+                .font(.system(size: 10, weight: .bold))
                 .foregroundStyle(Theme.primary)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 6)
