@@ -40,7 +40,6 @@
 		D64D9C40E7585420CC13CA93 /* SuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD044494A8FDBBCAABF7ED10 /* SuccessView.swift */; };
 		E53A09FCBAD7BD28B73095A1 /* CategoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2D7F0F468006BB27E65E62 /* CategoryListViewModel.swift */; };
 		F64B67F4FC3E98FCF5FEEECF /* ToastOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A8F437838502F27515BDB7 /* ToastOverlay.swift */; };
-		F897A68E97CBE5CA23C2B00D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C556C2533401030E2E9EFDBB /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,7 +69,6 @@
 		AA4222AFD131AF386EEB0729 /* AddressView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AddressView.swift; sourceTree = "<group>"; };
 		B2E01CD11B0468DA7F4D912D /* ProfileView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		B958A580BD50A2539FC9CB96 /* CartItemRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CartItemRow.swift; sourceTree = "<group>"; };
-		C556C2533401030E2E9EFDBB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		C5E40ACC610CFBDA181A56BA /* HomeViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		D2E047EA4E5E8D1573D693DB /* ConnectForm.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ConnectForm.swift; sourceTree = "<group>"; };
 		DD044494A8FDBBCAABF7ED10 /* SuccessView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SuccessView.swift; sourceTree = "<group>"; };
@@ -87,7 +85,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F897A68E97CBE5CA23C2B00D /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,7 +97,6 @@
 				35638BAA9866A6844F082432 /* HomeView.swift */,
 				F8A0BA41BD074B89A2E56093 /* ProductCard.swift */,
 			);
-			name = Home;
 			path = Home;
 			sourceTree = "<group>";
 		};
@@ -109,7 +105,6 @@
 			children = (
 				7CCF9B73E035CB38E614B450 /* AppState.swift */,
 			);
-			name = State;
 			path = State;
 			sourceTree = "<group>";
 		};
@@ -120,7 +115,6 @@
 				9CF2EBDC3A578D7574B34032 /* PersonalCartStore.swift */,
 				E0015F7B7E120945142994BC /* SocketService.swift */,
 			);
-			name = Services;
 			path = Services;
 			sourceTree = "<group>";
 		};
@@ -132,7 +126,6 @@
 				C5E40ACC610CFBDA181A56BA /* HomeViewModel.swift */,
 				03E26A55C17EC29B3CAEF251 /* ProfileViewModel.swift */,
 			);
-			name = ViewModels;
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
@@ -142,7 +135,6 @@
 				4306AE9D3F9A7A63776248AC /* AddToCartSheet.swift */,
 				7F537CD2F0C3C8516103A05B /* CategoryListView.swift */,
 			);
-			name = Product;
 			path = Product;
 			sourceTree = "<group>";
 		};
@@ -160,7 +152,6 @@
 				AA4222AFD131AF386EEB0729 /* AddressView.swift */,
 				DD044494A8FDBBCAABF7ED10 /* SuccessView.swift */,
 			);
-			name = Checkout;
 			path = Checkout;
 			sourceTree = "<group>";
 		};
@@ -171,7 +162,6 @@
 				69156068BADBFA85DA222FEF /* MyCodeSheet.swift */,
 				B2E01CD11B0468DA7F4D912D /* ProfileView.swift */,
 			);
-			name = Profile;
 			path = Profile;
 			sourceTree = "<group>";
 		};
@@ -187,7 +177,6 @@
 				E15D68CDDF787A48A7901DB3 /* RootTabView.swift */,
 				E8A8F437838502F27515BDB7 /* ToastOverlay.swift */,
 			);
-			name = Views;
 			path = Views;
 			sourceTree = "<group>";
 		};
@@ -205,14 +194,12 @@
 				19471E321BFE68DD45273070 /* ViewModels */,
 				70C17ADD90E22F26694C6A5D /* Views */,
 			);
-			name = BlinkitSharedCart;
 			path = BlinkitSharedCart;
 			sourceTree = "<group>";
 		};
 		AA469A296CAF09F8C75A4BCF /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				C556C2533401030E2E9EFDBB /* Foundation.framework */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -222,7 +209,6 @@
 			children = (
 				8684FC23A89C8C6857E85BE4 /* Models.swift */,
 			);
-			name = Models;
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -238,7 +224,6 @@
 				54D46A6150CD228D9B4ECCD2 /* SortFilterSheet.swift */,
 				5BD082803358DBD8D767E017 /* SplitPaymentSheet.swift */,
 			);
-			name = Cart;
 			path = Cart;
 			sourceTree = "<group>";
 		};
@@ -287,6 +272,12 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					22B240DBFDA19C6D1176DBC9 = {
+						DevelopmentTeam = 27LCJ6B9R9;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 7F9E89CB06397FC8C823117A /* Build configuration list for PBXProject "BlinkitSharedCart" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -297,8 +288,6 @@
 				Base,
 			);
 			mainGroup = FB42AA3B28FAE4EFDB98869F;
-			minimizedProjectReferenceProxies = 0;
-			preferredProjectObjectVersion = 100;
 			productRefGroup = E20949B311ED735AF33EBA90 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -410,8 +399,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -423,7 +411,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 27LCJ6B9R9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = BlinkitSharedCart/Info.plist;
@@ -506,7 +494,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 27LCJ6B9R9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = BlinkitSharedCart/Info.plist;
