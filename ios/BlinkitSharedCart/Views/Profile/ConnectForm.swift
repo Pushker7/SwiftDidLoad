@@ -50,8 +50,6 @@ struct ConnectForm: View {
                     .foregroundStyle(.red)
             }
         }
-        .padding(16)
-        .cardBackground()
     }
 
     private func connect() {
