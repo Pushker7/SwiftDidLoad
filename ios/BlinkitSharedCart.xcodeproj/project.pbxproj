@@ -13,41 +13,74 @@
 		1810099EF00C5875E6D18F6B /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EE62A1E0406FDAFA7C92A9A /* AppState.swift */; };
 		18F3F14494984539E07743A3 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF72498015952566DAAE267 /* ProfileView.swift */; };
 		18F5E89651D68445D6E0D5B2 /* BlinkitSharedCartApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F596C70F6616C16E572515 /* BlinkitSharedCartApp.swift */; };
+		1B146F9866E402ECCC2246F7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F1091C986F8082B8FD188 /* Foundation.framework */; };
 		205951F85D9AFED573D9D358 /* MyCodeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C46A7101E33E1166490118FE /* MyCodeSheet.swift */; };
 		21872B9D8367AC2A0FAD0097 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FEAAFAD6A9D6B5BCBA44691 /* OnboardingView.swift */; };
 		281BFBBBE047F21CF2FBA810 /* AddToCartSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778F351FCB5D6B319B30F8D3 /* AddToCartSheet.swift */; };
 		2985CEA221DC1EF797867671 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961FB85A528E1457E73748A5 /* HomeView.swift */; };
+		2B0E144668857BEB5A1EBAD8 /* BlinkitCartWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C848D61807655B075717A618 /* BlinkitCartWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2B6FE8D6CEE628E4895FCEA3 /* ConnectForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EE33EC06DD0C2F54AD681B6 /* ConnectForm.swift */; };
 		2BBE1D67BBF46FE1609DD0F4 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E33008C7287AF3CA97405A /* Theme.swift */; };
 		2D8E9907E6977B993BD6EFB1 /* CategoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D637F72940A85E5C1AAD40 /* CategoryListViewModel.swift */; };
 		32CECEE4E7B1C3BF23B4B6EF /* SuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B68AF938F9F83AB84C8FC1 /* SuccessView.swift */; };
 		32EA14481164FE5D6C93FAAE /* CartItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B00B394C1E1CCEC08B20AE /* CartItemRow.swift */; };
 		3628DFB08B2D2A18F0A1B703 /* SplitPaymentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969D5ABD9C03C3BC0E3ED36A /* SplitPaymentSheet.swift */; };
+		3DC3FE8055DA82642C6F54A0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5EE801C4CC108DD7E0F6D66 /* SwiftUI.framework */; };
 		5253B5C0514B4DFBF77ABD59 /* FreeDeliveryNudge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40D60A2E0B595EBE398649DB /* FreeDeliveryNudge.swift */; };
 		566B612F659BB6FB53E5C2EB /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 927C1F7FE834D79960B31054 /* APIClient.swift */; };
 		5C177507B253484F9FFEAB4F /* ToastOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F0EABFCF682B8D722C0C25 /* ToastOverlay.swift */; };
+		661935C0BBBA9D7EFA574602 /* BlinkitCartWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B42CDDB023EE1B4878D913D /* BlinkitCartWidget.swift */; };
+		6D3E792E5875732F0A8B3602 /* BlinkitCartAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FCF07A2CD6AAD008FF5362 /* BlinkitCartAttributes.swift */; };
 		6E3B39A3C152D76CC50CC452 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 944716F488241732346285CF /* ProfileViewModel.swift */; };
 		72FC3A68BABFF61BEDAB0952 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2880C6B252BFE985BB0D7BC /* Models.swift */; };
 		740D0300807711C348933AD3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3F1091C986F8082B8FD188 /* Foundation.framework */; };
 		7BD04973123838CE66AD51C5 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EF781B18C40FB9642E5D29 /* RootTabView.swift */; };
 		85979BD27CE0A666A4E69AA0 /* CategoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF04854BEA244AE3DB4CDA9 /* CategoryListView.swift */; };
 		88D817856DE1DC399DC4A1D4 /* SharedCartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9CA550465B31534EA02ECF /* SharedCartView.swift */; };
+		901AFCFD97AD59D6CDB37B2B /* BlinkitCartAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FCF07A2CD6AAD008FF5362 /* BlinkitCartAttributes.swift */; };
 		957331932505AE52EB437C9B /* SortFilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3070795CBAFA4C0CFFCC7BDE /* SortFilterSheet.swift */; };
 		9E6D416F0D9626DBF4EC237E /* PersonalCartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4D797EDB273B59F1844289 /* PersonalCartView.swift */; };
+		A450A9CA08E9EC97659E0CDC /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C342AF20F390A9FC05FB71D7 /* LiveActivityManager.swift */; };
 		ABABC55535F6F7398F86F937 /* ProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E3BE20A082D361D0398EE8 /* ProductCard.swift */; };
 		AEDCB22262E7B72E039166FF /* AddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7E9126D7BB21545F40BB4E1 /* AddressView.swift */; };
 		B024DD090D155499B9E17D43 /* CartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0893BD8E2A7B668E8675C055 /* CartViewModel.swift */; };
 		B9E9A17B3F82FA6D73342821 /* PersonalCartStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2700D1A6CC59C36D19E488BC /* PersonalCartStore.swift */; };
 		D685DB556873425FAE7016F3 /* CartToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADFE47B5A57034436E3593F /* CartToggle.swift */; };
+		DAA93D6587DC7A7B9FDF05EC /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBA16601C4EF542A874C11A2 /* WidgetKit.framework */; };
 		DCC124CC3E8CBC18A3FDECED /* SocketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A48D3D4A1CFD8FAD0F35F1 /* SocketService.swift */; };
 		E8DB66CC614BAF5AF376D3E9 /* CartTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D0DBAB5818C55301F72786 /* CartTabView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0323301EB7F2F2CCD6677C09 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8D1E978F95FC154BC07762E4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 25F2DDD8FEF5218E99A2698C;
+			remoteInfo = BlinkitCartWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B5C77D1A2636AA0D5FA0F519 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2B0E144668857BEB5A1EBAD8 /* BlinkitCartWidget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		01E3BE20A082D361D0398EE8 /* ProductCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProductCard.swift; sourceTree = "<group>"; };
 		04D637F72940A85E5C1AAD40 /* CategoryListViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryListViewModel.swift; sourceTree = "<group>"; };
 		0893BD8E2A7B668E8675C055 /* CartViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CartViewModel.swift; sourceTree = "<group>"; };
 		0AF04854BEA244AE3DB4CDA9 /* CategoryListView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CategoryListView.swift; sourceTree = "<group>"; };
+		0B42CDDB023EE1B4878D913D /* BlinkitCartWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BlinkitCartWidget.swift; sourceTree = "<group>"; };
 		0EE33EC06DD0C2F54AD681B6 /* ConnectForm.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ConnectForm.swift; sourceTree = "<group>"; };
 		0FEAAFAD6A9D6B5BCBA44691 /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		2700D1A6CC59C36D19E488BC /* PersonalCartStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PersonalCartStore.swift; sourceTree = "<group>"; };
@@ -71,12 +104,18 @@
 		B6E33008C7287AF3CA97405A /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		B7E9126D7BB21545F40BB4E1 /* AddressView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AddressView.swift; sourceTree = "<group>"; };
 		BB975DCC7EF7925CD8A4C663 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BBA16601C4EF542A874C11A2 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
 		C0EF781B18C40FB9642E5D29 /* RootTabView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
 		C2880C6B252BFE985BB0D7BC /* Models.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		C342AF20F390A9FC05FB71D7 /* LiveActivityManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
 		C46A7101E33E1166490118FE /* MyCodeSheet.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MyCodeSheet.swift; sourceTree = "<group>"; };
 		C4B00B394C1E1CCEC08B20AE /* CartItemRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CartItemRow.swift; sourceTree = "<group>"; };
+		C6FCF07A2CD6AAD008FF5362 /* BlinkitCartAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BlinkitCartAttributes.swift; sourceTree = "<group>"; };
+		C848D61807655B075717A618 /* BlinkitCartWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BlinkitCartWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5EE801C4CC108DD7E0F6D66 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		D7DA31C10657A10A77D6CC15 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E0F596C70F6616C16E572515 /* BlinkitSharedCartApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BlinkitSharedCartApp.swift; sourceTree = "<group>"; };
+		EB4ABDAE40C16B1BD89C4925 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED0767806E533D40B4CCC56E /* BlinkitSharedCart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlinkitSharedCart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1D0DBAB5818C55301F72786 /* CartTabView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CartTabView.swift; sourceTree = "<group>"; };
 		F3FF6AC00E416ECADCD8B05F /* HomeViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -91,6 +130,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA5DD2AEF00C884FB6C0B822 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1B146F9866E402ECCC2246F7 /* Foundation.framework in Frameworks */,
+				DAA93D6587DC7A7B9FDF05EC /* WidgetKit.framework in Frameworks */,
+				3DC3FE8055DA82642C6F54A0 /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -98,6 +147,8 @@
 			isa = PBXGroup;
 			children = (
 				4A3F1091C986F8082B8FD188 /* Foundation.framework */,
+				BBA16601C4EF542A874C11A2 /* WidgetKit.framework */,
+				D5EE801C4CC108DD7E0F6D66 /* SwiftUI.framework */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -116,6 +167,7 @@
 				98FEAB9596E423AF35C628BF /* Products */,
 				4C08A9B0F160CC90D0600B7B /* Frameworks */,
 				7350CB58946432B9A4FB7B1F /* BlinkitSharedCart */,
+				CB9116C72368BD8DCA731CC1 /* BlinkitCartWidget */,
 			);
 			sourceTree = "<group>";
 		};
@@ -147,6 +199,7 @@
 				B6E33008C7287AF3CA97405A /* Theme.swift */,
 				9E0184CB587657B372C5CE83 /* ViewModels */,
 				C84C9D972537F8168972128F /* Views */,
+				FFF29150BC407DD370FBA3C5 /* LiveActivity */,
 			);
 			path = BlinkitSharedCart;
 			sourceTree = "<group>";
@@ -184,6 +237,7 @@
 			isa = PBXGroup;
 			children = (
 				ED0767806E533D40B4CCC56E /* BlinkitSharedCart.app */,
+				C848D61807655B075717A618 /* BlinkitCartWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -230,6 +284,16 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		CB9116C72368BD8DCA731CC1 /* BlinkitCartWidget */ = {
+			isa = PBXGroup;
+			children = (
+				0B42CDDB023EE1B4878D913D /* BlinkitCartWidget.swift */,
+				EB4ABDAE40C16B1BD89C4925 /* Info.plist */,
+			);
+			name = BlinkitCartWidget;
+			path = BlinkitCartWidget;
+			sourceTree = "<group>";
+		};
 		DDC630D22FC225B2D6AC8ABB /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -248,6 +312,16 @@
 			path = Product;
 			sourceTree = "<group>";
 		};
+		FFF29150BC407DD370FBA3C5 /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				C6FCF07A2CD6AAD008FF5362 /* BlinkitCartAttributes.swift */,
+				C342AF20F390A9FC05FB71D7 /* LiveActivityManager.swift */,
+			);
+			name = LiveActivity;
+			path = LiveActivity;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -258,15 +332,34 @@
 				ADEFD683BE3E2440AC661499 /* Sources */,
 				2E62DCA6311E6D0D5EA1AEBF /* Frameworks */,
 				42FD8A6858FA7919E1BC6501 /* Resources */,
+				B5C77D1A2636AA0D5FA0F519 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				DE119CD55A2ABE7D3E5413E2 /* PBXTargetDependency */,
 			);
 			name = BlinkitSharedCart;
 			productName = BlinkitSharedCart;
 			productReference = ED0767806E533D40B4CCC56E /* BlinkitSharedCart.app */;
 			productType = "com.apple.product-type.application";
+		};
+		25F2DDD8FEF5218E99A2698C /* BlinkitCartWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7FE2D1FC02181BF4A02E1EA2 /* Build configuration list for PBXNativeTarget "BlinkitCartWidget" */;
+			buildPhases = (
+				40D28AD9ACD25E6EFA66C22D /* Sources */,
+				FA5DD2AEF00C884FB6C0B822 /* Frameworks */,
+				D3622B51046C2AB9ED3CEB7F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BlinkitCartWidget;
+			productName = BlinkitCartWidget;
+			productReference = C848D61807655B075717A618 /* BlinkitCartWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -297,6 +390,7 @@
 			projectRoot = "";
 			targets = (
 				1EFB7411712DC5A119FF43C3 /* BlinkitSharedCart */,
+				25F2DDD8FEF5218E99A2698C /* BlinkitCartWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -310,9 +404,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D3622B51046C2AB9ED3CEB7F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		40D28AD9ACD25E6EFA66C22D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				661935C0BBBA9D7EFA574602 /* BlinkitCartWidget.swift in Sources */,
+				6D3E792E5875732F0A8B3602 /* BlinkitCartAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		ADEFD683BE3E2440AC661499 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -349,10 +459,21 @@
 				18F3F14494984539E07743A3 /* ProfileView.swift in Sources */,
 				7BD04973123838CE66AD51C5 /* RootTabView.swift in Sources */,
 				5C177507B253484F9FFEAB4F /* ToastOverlay.swift in Sources */,
+				901AFCFD97AD59D6CDB37B2B /* BlinkitCartAttributes.swift in Sources */,
+				A450A9CA08E9EC97659E0CDC /* LiveActivityManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DE119CD55A2ABE7D3E5413E2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = BlinkitCartWidget;
+			target = 25F2DDD8FEF5218E99A2698C /* BlinkitCartWidget */;
+			targetProxy = 0323301EB7F2F2CCD6677C09 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		209198910F3FBA07AF1C1430 /* Release */ = {
@@ -438,6 +559,25 @@
 			};
 			name = Debug;
 		};
+		909A7DD24BC6ED768C68CF67 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BlinkitCartWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hackathon.blinkitsharedcart.BlinkitCartWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		9D1FAD2D20A9477B955BCFBC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -512,6 +652,24 @@
 			};
 			name = Debug;
 		};
+		D2460CF9974B2D8180AB4BEA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BlinkitCartWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hackathon.blinkitsharedcart.BlinkitCartWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -529,6 +687,15 @@
 			buildConfigurations = (
 				5B3A9BEDEA09D6754B71F092 /* Debug */,
 				9D1FAD2D20A9477B955BCFBC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7FE2D1FC02181BF4A02E1EA2 /* Build configuration list for PBXNativeTarget "BlinkitCartWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				909A7DD24BC6ED768C68CF67 /* Release */,
+				D2460CF9974B2D8180AB4BEA /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

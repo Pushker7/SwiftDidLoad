@@ -8,12 +8,22 @@ private struct GoHomeActionKey: EnvironmentKey {
     static let defaultValue: () -> Void = {}
 }
 
+private struct GoToProfileActionKey: EnvironmentKey {
+    static let defaultValue: () -> Void = {}
+}
+
 extension EnvironmentValues {
     /// Clears the Cart tab's navigation stack and switches to Home. Used after checkout
     /// so leaving the success screen never lands back on the (now stale) address screen.
     var goHome: () -> Void {
         get { self[GoHomeActionKey.self] }
         set { self[GoHomeActionKey.self] = newValue }
+    }
+
+    /// Switches to the Profile tab — used by the avatar shortcut in the Home header.
+    var goToProfile: () -> Void {
+        get { self[GoToProfileActionKey.self] }
+        set { self[GoToProfileActionKey.self] = newValue }
     }
 }
 
@@ -58,6 +68,9 @@ struct RootTabView: View {
             .environment(\.goHome) {
                 cartPath = NavigationPath()
                 selectedTab = .home
+            }
+            .environment(\.goToProfile) {
+                selectedTab = .profile
             }
 
             ToastOverlay(toasts: appState.toasts)

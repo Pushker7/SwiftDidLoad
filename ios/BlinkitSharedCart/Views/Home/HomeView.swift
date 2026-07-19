@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeView: View {
     @Environment(AppState.self) private var appState
+    @Environment(\.goToProfile) private var goToProfile
     @State private var viewModel = HomeViewModel()
 
     private var walletAmount: Int { appState.walletBalance }
@@ -88,7 +89,7 @@ struct HomeView: View {
                                 .font(.system(size: 10, weight: .bold))
                                 .foregroundStyle(Theme.textPrimary)
                         }
-                        Text(viewModel.currentAddress)
+                        Text(appState.selectedAddress)
                             .font(.system(size: 11, weight: .medium))
                             .foregroundStyle(Theme.textSecondary)
                             .lineLimit(1)
@@ -120,8 +121,13 @@ struct HomeView: View {
             .buttonStyle(.plain)
 
             // User Profile Shortcut
-            avatar(name: username, hex: appState.user?.colorHex ?? memberColors[0], size: 36)
-                .shadow(color: Color.black.opacity(0.05), radius: 4)
+            Button {
+                goToProfile()
+            } label: {
+                avatar(name: username, hex: appState.user?.colorHex ?? memberColors[0], size: 36)
+                    .shadow(color: Color.black.opacity(0.05), radius: 4)
+            }
+            .buttonStyle(.plain)
         }
         .padding(12)
         .liquidGlassBackground()
@@ -285,13 +291,15 @@ struct HomeView: View {
                 .padding(.top, 24)
                 .padding(.horizontal, 20)
             
-            VStack(spacing: 12) {
-                addressOptionRow(address: "Chhatarpur Farms, DLF Farms")
-                addressOptionRow(address: "402, Sunrise Apartments, Gurugram")
-                addressOptionRow(address: "102, Huda Metro Station Road, Sec 29")
+            ScrollView {
+                VStack(spacing: 12) {
+                    ForEach(appState.savedAddresses, id: \.self) { address in
+                        addressOptionRow(address: address)
+                    }
+                }
+                .padding(.horizontal, 20)
             }
-            .padding(.horizontal, 20)
-            
+
             Spacer()
         }
         .background(Theme.background)
@@ -312,8 +320,8 @@ struct HomeView: View {
                     .multilineTextAlignment(.leading)
                 
                 Spacer()
-                
-                if viewModel.currentAddress == address {
+
+                if appState.selectedAddress == address {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(Theme.primary)
                 }

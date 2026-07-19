@@ -11,8 +11,10 @@ final class ProfileViewModel {
     var showingAddressList = false
     var showingLikedItems = false
     var showingNameEdit = false
+    var showingAddAddress = false
     var hideSensitive = false
     var newName = ""
+    var newAddress = ""
 
     func saveName(appState: AppState) {
         let trimmed = newName.trimmingCharacters(in: .whitespaces)
