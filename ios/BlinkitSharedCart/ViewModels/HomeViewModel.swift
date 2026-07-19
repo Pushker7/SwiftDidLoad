@@ -7,15 +7,16 @@ final class HomeViewModel {
     var searchQuery: String = ""
     var showingWalletSheet: Bool = false
     var showingAddressSheet: Bool = false
+    var currentAddress: String = "Chhatarpur Farms, DLF Farms"
     var walletAmountText: String = ""
-
+    
     func addMockWalletAmount(amount: Int, appState: AppState) {
         appState.walletBalance += amount
         appState.showToast("Added ₹\(amount) to Wallet!")
     }
-
+    
     func updateAddress(address: String, appState: AppState) {
-        appState.selectedAddress = address
+        currentAddress = address
         showingAddressSheet = false
         appState.showToast("Delivery address updated!")
     }

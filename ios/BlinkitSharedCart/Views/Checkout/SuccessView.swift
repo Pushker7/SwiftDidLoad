@@ -81,10 +81,6 @@ struct SuccessView: View {
                 valueColor: summary.deliveryFee == 0 ? Theme.primary : Theme.textPrimary
             )
 
-            if summary.walletApplied > 0 {
-                billRow(label: "Blinkit Money", value: "-₹\(summary.walletApplied)", valueColor: Theme.primary)
-            }
-
             Divider().background(Theme.border)
 
             HStack {
@@ -92,23 +88,9 @@ struct SuccessView: View {
                     .font(.system(size: 15, weight: .bold))
                     .foregroundStyle(Theme.textPrimary)
                 Spacer()
-                Text("₹\(summary.amountPayable)")
+                Text("₹\(summary.total)")
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(Theme.textPrimary)
-            }
-
-            if !summary.address.isEmpty {
-                Divider().background(Theme.border)
-                HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "mappin.circle.fill")
-                        .font(.system(size: 13))
-                        .foregroundStyle(Theme.primary)
-                    Text(summary.address)
-                        .font(.system(size: 11))
-                        .foregroundStyle(Theme.textSecondary)
-                        .multilineTextAlignment(.leading)
-                    Spacer()
-                }
             }
         }
         .padding(16)

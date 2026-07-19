@@ -20,23 +20,7 @@ final class AppState {
 
     var categories: [ProductCategory] = []
     var products: [Product] = []
-
-    var walletBalance: Int = 0 {
-        didSet { UserDefaults.standard.set(walletBalance, forKey: "walletBalance") }
-    }
-
-    /// Single source of truth for the address book — Home, Profile and Checkout all read this.
-    var savedAddresses: [String] = [] {
-        didSet { UserDefaults.standard.set(savedAddresses, forKey: "savedAddresses") }
-    }
-
-    var selectedAddress: String = "" {
-        didSet { UserDefaults.standard.set(selectedAddress, forKey: "selectedAddress") }
-    }
-
-    var selectedPaymentMethod: String = "Blinkit UPI Wallet" {
-        didSet { UserDefaults.standard.set(selectedPaymentMethod, forKey: "selectedPaymentMethod") }
-    }
+    var walletBalance: Int = 0
 
     var carts: [Cart] = [] {
         didSet { PersonalCartStore.save(carts) }
@@ -93,8 +77,6 @@ final class AppState {
         }
         activeCartId = carts.first?.id ?? ""
 
-        loadWalletAndAddresses()
-
         guard let userId = UserDefaults.standard.string(forKey: "userId") else { return }
         do {
             let fetched = try await APIClient.fetchUser(id: userId)
@@ -133,51 +115,6 @@ final class AppState {
         }
     }
 
-    // MARK: - Wallet & addresses
-
-    private func loadWalletAndAddresses() {
-        walletBalance = UserDefaults.standard.integer(forKey: "walletBalance")
-
-        let stored = UserDefaults.standard.stringArray(forKey: "savedAddresses") ?? []
-        savedAddresses = stored.isEmpty
-            ? ["Chhatarpur Farms, DLF Farms",
-               "402, Sunrise Apartments, Gurugram",
-               "102, Huda Metro Station Road, Sec 29"]
-            : stored
-
-        let storedSelection = UserDefaults.standard.string(forKey: "selectedAddress") ?? ""
-        selectedAddress = savedAddresses.contains(storedSelection) ? storedSelection : (savedAddresses.first ?? "")
-
-        if let method = UserDefaults.standard.string(forKey: "selectedPaymentMethod") {
-            selectedPaymentMethod = method
-        }
-    }
-
-    func addAddress(_ address: String) {
-        let trimmed = address.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty, !savedAddresses.contains(trimmed) else { return }
-        savedAddresses.append(trimmed)
-        selectedAddress = trimmed
-    }
-
-    func deleteAddress(_ address: String) {
-        guard savedAddresses.count > 1 else { return }
-        savedAddresses.removeAll { $0 == address }
-        if selectedAddress == address {
-            selectedAddress = savedAddresses.first ?? ""
-        }
-    }
-
-    /// Spends as much of the wallet as the order total allows and returns the amount covered,
-    /// so checkout can show "paid by Blinkit Money" vs. what's still payable.
-    @discardableResult
-    func redeemWallet(towards total: Int) -> Int {
-        let applied = min(walletBalance, total)
-        guard applied > 0 else { return 0 }
-        walletBalance -= applied
-        return applied
-    }
-
     // MARK: - Connections
 
     func connect(code: String) async {
@@ -190,11 +127,6 @@ final class AppState {
     private func setupSocketCallbacks() {
         socket.onState = { [weak self] incomingSharedCarts, _, incomingMembers in
             guard let self else { return }
-            // Remember what the shared cart looked like before this snapshot lands — a
-            // checkout broadcast arrives as (cleared cart, then event), so this is what
-            // lets the non-paying members show the right order in their Live Activity.
-            self.captureOrderSnapshot()
-
             // Set-reconciliation: the sender always broadcasts its FULL known shared-cart
             // set, so replacing our whole shared subset with theirs correctly propagates
             // adds, edits, AND deletes, while personal (non-shared) carts are untouched.
@@ -204,7 +136,6 @@ final class AppState {
             if !self.carts.contains(where: { $0.id == self.activeCartId }) {
                 self.activeCartId = self.carts.first?.id ?? ""
             }
-            self.syncLiveActivity()
         }
         socket.onEvent = { [weak self] actorId, actorName, eventType, productName, qty in
             self?.handleEvent(actorId: actorId, actorName: actorName, eventType: eventType, productName: productName, qty: qty)
@@ -236,15 +167,6 @@ final class AppState {
             showToast("\(actorName) removed \(productName ?? "an item")")
         case "checkout":
             showToast("🎉 \(actorName) placed an order")
-            if let snapshot = lastOrderSnapshot {
-                startDeliveryActivity(
-                    cartId: snapshot.cartId,
-                    cartName: snapshot.name,
-                    itemCount: snapshot.itemCount,
-                    total: snapshot.total,
-                    placedBy: actorName
-                )
-            }
         case "join":
             showToast("\(actorName) connected")
         default:
@@ -296,7 +218,6 @@ final class AppState {
             carts[index].isShared = false
             carts[index].memberIds = []
         }
-        LiveActivityManager.shared.end()
     }
 
     /// Sends the full set of shared carts (including ones received from the peer earlier),
@@ -350,27 +271,10 @@ final class AppState {
 
     func checkoutCart(cartId: String) {
         guard let user, let index = carts.firstIndex(where: { $0.id == cartId }) else { return }
-
-        // Capture the order details before the cart is emptied, so the delivery
-        // Live Activity can show what was actually ordered.
-        let cart = carts[index]
-        let itemCount = cart.items.reduce(0) { $0 + $1.qty }
-        let subtotal = cart.items.reduce(0) { runningTotal, item in
-            guard let product = productFor(item.productId) else { return runningTotal }
-            return runningTotal + product.price * item.qty
-        }
-
         carts[index].items = []
-        if cart.isShared {
+        if carts[index].isShared {
             broadcastSharedCarts()
             socket.sendEvent(actorId: user.id, actorName: user.name, eventType: "checkout", productName: nil, qty: nil)
-            startDeliveryActivity(
-                cartId: cart.id,
-                cartName: cart.name,
-                itemCount: itemCount,
-                total: CartMath.estTotal(subtotal: subtotal),
-                placedBy: "You"
-            )
         }
     }
 
@@ -378,83 +282,6 @@ final class AppState {
         guard let cart = cartFor(cartId), cart.isShared else { return }
         broadcastSharedCarts()
         socket.sendEvent(actorId: actorId, actorName: actorName, eventType: eventType, productName: productName, qty: qty)
-
-        let verb = eventType == "remove" ? "removed" : (eventType == "qty" ? "updated" : "added")
-        syncLiveActivity(headline: productName.map { "\(actorName) \(verb) \($0)" } ?? "\(actorName) updated the cart")
-    }
-
-    // MARK: - Live Activity
-
-    private struct OrderSnapshot {
-        let cartId: String
-        let name: String
-        let itemCount: Int
-        let total: Int
-    }
-
-    private var lastOrderSnapshot: OrderSnapshot?
-
-    private func captureOrderSnapshot() {
-        guard let cart = carts.first(where: { $0.isShared }) else { return }
-        let itemCount = cart.items.reduce(0) { $0 + $1.qty }
-        guard itemCount > 0 else { return }
-        let subtotal = cart.items.reduce(0) { runningTotal, item in
-            guard let product = productFor(item.productId) else { return runningTotal }
-            return runningTotal + product.price * item.qty
-        }
-        lastOrderSnapshot = OrderSnapshot(
-            cartId: cart.id,
-            name: cart.name,
-            itemCount: itemCount,
-            total: CartMath.estTotal(subtotal: subtotal)
-        )
-    }
-
-    /// Mirrors the first shared cart onto the lock screen / Dynamic Island. Runs on every
-    /// member's device off their own synced state, so everyone sees changes — not just the payer.
-    func syncLiveActivity(headline: String? = nil) {
-        guard let cart = carts.first(where: { $0.isShared }), hasConnections else {
-            LiveActivityManager.shared.endIfShopping()
-            return
-        }
-
-        let itemCount = cart.items.reduce(0) { $0 + $1.qty }
-        guard itemCount > 0 else {
-            LiveActivityManager.shared.endIfShopping()
-            return
-        }
-
-        let total = cart.items.reduce(0) { runningTotal, item in
-            guard let product = productFor(item.productId) else { return runningTotal }
-            return runningTotal + product.price * item.qty
-        }
-
-        LiveActivityManager.shared.sync(
-            cartId: cart.id,
-            phase: .shopping,
-            cartName: cart.name,
-            itemCount: itemCount,
-            total: CartMath.estTotal(subtotal: total),
-            headline: headline ?? "\(itemCount) items in \(cart.name)",
-            memberInitials: members.map { String($0.name.prefix(1)).uppercased() }
-        )
-    }
-
-    /// Switches the Live Activity to delivery tracking. Called on the device that placed the
-    /// order and, via the broadcast `checkout` event, on every other member's device too.
-    private func startDeliveryActivity(cartId: String, cartName: String, itemCount: Int, total: Int, placedBy: String) {
-        guard itemCount > 0 else { return }
-        LiveActivityManager.shared.sync(
-            cartId: cartId,
-            phase: .packing,
-            cartName: cartName,
-            itemCount: itemCount,
-            total: total,
-            headline: "\(placedBy) placed the order",
-            memberInitials: members.map { String($0.name.prefix(1)).uppercased() },
-            orderId: String(format: "BLK-%04d", Int.random(in: 0...9999)),
-            deliveryETA: Date().addingTimeInterval(25 * 60)
-        )
     }
 
     // MARK: - Cart badge

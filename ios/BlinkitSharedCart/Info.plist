@@ -45,9 +45,5 @@
 		<string>_blinkit-cart._tcp</string>
 		<string>_blinkit-cart._udp</string>
 	</array>
-	<key>NSSupportsLiveActivities</key>
-	<true/>
-	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
-	<true/>
 </dict>
 </plist>

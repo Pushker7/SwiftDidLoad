@@ -164,26 +164,21 @@ struct ProfileView: View {
             Divider().padding(.horizontal, 14).background(Theme.border.opacity(0.5))
             
             // Appearance Light Selection
-            Button {
-                appState.showToast("Blinkit is optimised for Light appearance")
-            } label: {
-                HStack(spacing: 12) {
-                    iconBadge(image: "sun.max.fill", color: .orange)
-                    Text("Appearance")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Theme.textPrimary)
-                    Spacer()
-                    Text("Light")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(Theme.textSecondary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
-                        .background(Color.orange.opacity(0.1))
-                        .clipShape(Capsule())
-                }
-                .padding(14)
+            HStack(spacing: 12) {
+                iconBadge(image: "sun.max.fill", color: .orange)
+                Text("Appearance")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Theme.textPrimary)
+                Spacer()
+                Text("Light")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Theme.textSecondary)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(Color.orange.opacity(0.1))
+                    .clipShape(Capsule())
             }
-            .buttonStyle(.plain)
+            .padding(14)
 
             Divider().padding(.horizontal, 14).background(Theme.border.opacity(0.5))
 
@@ -351,50 +346,31 @@ struct ProfileView: View {
                 .font(.system(size: 18, weight: .bold))
                 .foregroundStyle(Theme.textPrimary)
                 .padding(.top, 24)
-
-            Text("Used as the default at checkout")
-                .font(.system(size: 12))
-                .foregroundStyle(Theme.textSecondary)
-
+            
             VStack(spacing: 12) {
                 paymentOptionRow(title: "Visa Card ending in 4321", icon: "creditcard.fill")
                 paymentOptionRow(title: "Apple Pay", icon: "applelogo")
                 paymentOptionRow(title: "Blinkit UPI Wallet", icon: "indianrupeesign.circle.fill")
             }
             .padding(.horizontal, 20)
-
+            
             Spacer()
         }
         .background(Theme.background)
     }
 
     private func paymentOptionRow(title: String, icon: String) -> some View {
-        let isSelected = appState.selectedPaymentMethod == title
-        return Button {
-            appState.selectedPaymentMethod = title
-            appState.showToast("\(title) set as default")
-        } label: {
-            HStack(spacing: 12) {
-                Image(systemName: icon)
-                    .font(.system(size: 16))
-                    .foregroundStyle(Theme.primary)
-                Text(title)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(Theme.textPrimary)
-                Spacer()
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(Theme.primary)
-                }
-            }
-            .padding(14)
-            .cardBackground()
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Theme.primary : Color.clear, lineWidth: 1.5)
-            )
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 16))
+                .foregroundStyle(Theme.primary)
+            Text(title)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Theme.textPrimary)
+            Spacer()
         }
-        .buttonStyle(.plain)
+        .padding(14)
+        .cardBackground()
     }
 
     private var walletSheetView: some View {
@@ -428,86 +404,41 @@ struct ProfileView: View {
     }
 
     private var addressSheetView: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack {
-                Text("Saved Addresses")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(Theme.textPrimary)
-                Spacer()
-                Button {
-                    viewModel.showingAddAddress = true
-                } label: {
-                    Label("Add", systemImage: "plus")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Theme.primary)
-                }
-                .buttonStyle(.plain)
-            }
-            .padding(.top, 24)
-            .padding(.horizontal, 20)
-
-            ScrollView {
-                VStack(spacing: 12) {
-                    ForEach(appState.savedAddresses, id: \.self) { address in
-                        addressDetailRow(address: address)
-                    }
-                }
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Saved Addresses")
+                .font(.system(size: 18, weight: .bold))
+                .foregroundStyle(Theme.textPrimary)
+                .padding(.top, 24)
                 .padding(.horizontal, 20)
+            
+            VStack(spacing: 12) {
+                addressDetailRow(title: "Home", address: "Chhatarpur Farms, DLF Farms")
+                addressDetailRow(title: "Office", address: "402, Sunrise Apartments, Gurugram")
             }
-
+            .padding(.horizontal, 20)
+            
             Spacer()
         }
         .background(Theme.background)
-        .alert("Add address", isPresented: $viewModel.showingAddAddress) {
-            TextField("Flat, street, area", text: $viewModel.newAddress)
-            Button("Cancel", role: .cancel) { viewModel.newAddress = "" }
-            Button("Save") {
-                appState.addAddress(viewModel.newAddress)
-                viewModel.newAddress = ""
-                appState.showToast("Address added!")
-            }
-        }
     }
 
-    private func addressDetailRow(address: String) -> some View {
-        let isSelected = appState.selectedAddress == address
-        return Button {
-            appState.selectedAddress = address
-            appState.showToast("Delivery address updated!")
-        } label: {
-            HStack(spacing: 12) {
-                Image(systemName: "house.fill")
-                    .font(.system(size: 16))
-                    .foregroundStyle(isSelected ? Theme.primary : Theme.textSecondary)
-                Text(address)
-                    .font(.system(size: 12, weight: isSelected ? .semibold : .regular))
+    private func addressDetailRow(title: String, address: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: "house.fill")
+                .font(.system(size: 16))
+                .foregroundStyle(Theme.primary)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.system(size: 13, weight: .bold))
                     .foregroundStyle(Theme.textPrimary)
-                    .multilineTextAlignment(.leading)
-                Spacer()
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(Theme.primary)
-                }
-                if appState.savedAddresses.count > 1 {
-                    Button {
-                        appState.deleteAddress(address)
-                        appState.showToast("Address removed")
-                    } label: {
-                        Image(systemName: "trash")
-                            .font(.system(size: 12))
-                            .foregroundStyle(.red)
-                    }
-                    .buttonStyle(.plain)
-                }
+                Text(address)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Theme.textSecondary)
             }
-            .padding(14)
-            .cardBackground()
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Theme.primary : Color.clear, lineWidth: 1.5)
-            )
+            Spacer()
         }
-        .buttonStyle(.plain)
+        .padding(14)
+        .cardBackground()
     }
 
     private var likedItemsSheetView: some View {
